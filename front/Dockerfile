@@ -1,8 +1,8 @@
 FROM node:alpine as build-step
 
-RUN mkdir /app
-
 WORKDIR /app
+
+ENV PATH /app/node_modules/.bin:$PATH
 
 COPY package.json ./
 
@@ -10,7 +10,7 @@ RUN yarn install
 
 COPY . ./
 
-RUN yarn build
+RUN yarn run build
 
 
 FROM nginx:stable-alpine

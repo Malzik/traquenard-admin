@@ -7,6 +7,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json ./
 
 COPY . ./
+
 RUN npm install
 
 EXPOSE 5000
