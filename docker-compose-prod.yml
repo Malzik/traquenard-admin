@@ -1,0 +1,45 @@
+version: '3'
+services:
+  front:
+    image: traquenard_front
+    container_name: traquenard_front
+    expose:
+      - 81
+    ports:
+      - "81:3000"
+    volumes:
+      - ./front:/var/www/front
+      - "./volumes/front:/var/log"
+    working_dir: /var/www/front
+    command: npm start
+    links:
+      - api
+
+  api:
+    image: traquenard_api
+    container_name: traquenard_api
+    expose:
+      - 5000
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./api:/var/www/api
+      - "./volumes/api:/var/log"
+    links:
+      - mariadb
+    working_dir: /var/www/api
+    command: npm run start
+
+  mariadb:
+    image: mariadb:10.3.27
+    container_name: traquenard_db
+    volumes:
+      - "./volumes/db:/var/lib/mysql"
+      - "./database/db-save.sql:/docker-entrypoint-initdb.d/2.sql"
+    environment:
+      MYSQL_DATABASE: traquenard
+      MYSQL_USER: traquenard
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3310:3306"

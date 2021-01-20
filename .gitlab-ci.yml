@@ -1,0 +1,51 @@
+variables:
+  ROBOT_USER: $REGISTRY_USER
+stages:
+  - build-front
+  - build-api
+  - deploy-server
+
+build-front:
+  image: docker:stable
+  services:
+    - docker:dind
+  variables:
+    ROBOT_USER: $REGISTRY_USER
+  stage: deploy
+  before_script:
+    - echo "registry user is :" $ROBOT_USER
+  script:
+    # registry user/password : variables définies dans gitlab
+    - echo "$REGISTRY_PASSWORD" | docker login reg.amoyel.fr -u $ROBOT_USER --password-stdin
+    - docker build -t reg.amoyel.fr/aheroin/traquenard-front ./front
+    - docker push reg.amoyel.fr/aheroin/traquenard-front
+  only:
+    - master
+
+build-api:
+  image: docker:stable
+  services:
+    - docker:dind
+  variables:
+    ROBOT_USER: $REGISTRY_USER
+  stage: deploy
+  before_script:
+    - echo "registry user is :" $ROBOT_USER
+  script:
+    # registry user/password : variables définies dans gitlab
+    - echo "$REGISTRY_PASSWORD" | docker login reg.amoyel.fr -u $ROBOT_USER --password-stdin
+    - docker build -t reg.amoyel.fr/aheroin/traquenard-api ./api
+    - docker push reg.amoyel.fr/aheroin/traquenard-api
+  only:
+    - master
+
+docker-deploy:
+  stage: deploy-server
+  image: docker/compose
+  tags:
+    - deploy-server
+  script:
+    - docker-compose down
+    - docker-compose up -f docker-compose-prod.yml -d
+  only:
+    - master
