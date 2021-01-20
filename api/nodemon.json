@@ -7,7 +7,8 @@
   ],
   "verbose" : false,
   "watch": [
-    "server.js",
+    "www.js",
+    "app.js",
     "config/*",
     "controllers/*",
     "models/*",

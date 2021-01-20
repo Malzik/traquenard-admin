@@ -27,6 +27,6 @@ app.get("/", (req, res) => {
     res.json({ message: "Welcome to aheroin application." });
 });
 
-// require("./routes/question.js")(app);
+require("./routes/question.js")(app);
 
 module.exports = app;
