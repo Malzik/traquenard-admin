@@ -1,8 +1,7 @@
 variables:
   ROBOT_USER: $REGISTRY_USER
 stages:
-  - build-front
-  - build-api
+  - docker
   - deploy-server
 
 build-front:
@@ -11,7 +10,7 @@ build-front:
     - docker:dind
   variables:
     ROBOT_USER: $REGISTRY_USER
-  stage: build-front
+  stage: docker
   before_script:
     - echo "registry user is :" $ROBOT_USER
   script:
@@ -28,7 +27,7 @@ build-api:
     - docker:dind
   variables:
     ROBOT_USER: $REGISTRY_USER
-  stage: build-api
+  stage: docker
   before_script:
     - echo "registry user is :" $ROBOT_USER
   script:

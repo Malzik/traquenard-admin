@@ -4,7 +4,7 @@ services:
     image: reg.amoyel.fr/aheroin/traquenard-front
     container_name: traquenard-front
     ports:
-      - "81:80"
+      - "82:80"
     links:
       - api
 
