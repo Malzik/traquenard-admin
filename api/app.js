@@ -1,11 +1,18 @@
 const express = require("express");
+const path = require('path');
 const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
 const app = express();
 
+app.use(logger('dev'));
+app.use(express.json());
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header(
@@ -20,6 +27,6 @@ app.get("/", (req, res) => {
     res.json({ message: "Welcome to aheroin application." });
 });
 
-require("./routes/question.js")(app);
+// require("./routes/question.js")(app);
 
 module.exports = app;
