@@ -19,7 +19,7 @@ export const Rule = ({rule, showAnswers}) => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({rule: question, sip: sip, answers: JSON.stringify(answers)})
             };
-            fetch('http://localhost:5000/question/' + rule.id, requestOptions)
+            fetch('/api/question/' + rule.id, requestOptions)
                 .then(() => toast.success("Règle id " + rule.id + " mise à jour"))
         } else {
             toast.error("Pas de modification")

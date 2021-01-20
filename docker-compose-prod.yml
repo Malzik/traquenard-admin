@@ -7,6 +7,7 @@ services:
       - "82:80"
     links:
       - api
+    restart: always
 
   api:
     image: reg.amoyel.fr/aheroin/traquenard-api
@@ -15,6 +16,7 @@ services:
       - "5000:5000"
     links:
       - mariadb
+    restart: always
 
   mariadb:
     image: mariadb:10.3.27
@@ -29,3 +31,4 @@ services:
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "3310:3306"
+    restart: always
