@@ -19,11 +19,10 @@ services:
     restart: always
 
   mariadb:
-    image: mariadb:10.3.27
-    container_name: traquenard_db
+    image: reg.amoyel.fr/aheroin/traquenard-db:latest
+    container_name: traquenard-db
     volumes:
       - "./volumes/db:/var/lib/mysql"
-      - "./database:/docker-entrypoint-initdb.d"
     environment:
       MYSQL_DATABASE: traquenard
       MYSQL_USER: traquenard

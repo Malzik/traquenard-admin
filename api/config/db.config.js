@@ -1,5 +1,5 @@
 module.exports = {
-    HOST: "traquenard_db",
+    HOST: "traquenard-db",
     USER: "traquenard",
     PASSWORD: "root",
     DB: "traquenard"

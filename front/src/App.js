@@ -15,7 +15,7 @@ function App() {
     const [selectedType, setSelectedType] = useState("all");
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/question")
+        fetch("/api/question")
             .then(res => res.json())
             .then(
                 (result) => {
