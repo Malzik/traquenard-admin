@@ -1,34 +1,20 @@
 version: '3'
 services:
   front:
-    image: traquenard_front
-    container_name: traquenard_front
-    expose:
-      - 81
+    image: reg.amoyel.fr/aheroin/traquenard-front
+    container_name: traquenard-front
     ports:
-      - "81:3000"
-    volumes:
-      - ./front:/var/www/front
-      - "./volumes/front:/var/log"
-    working_dir: /var/www/front
-    command: npm start
+      - "81:80"
     links:
       - api
 
   api:
-    image: traquenard_api
-    container_name: traquenard_api
-    expose:
-      - 5000
+    image: reg.amoyel.fr/aheroin/traquenard-api
+    container_name: traquenard-api
     ports:
       - "5000:5000"
-    volumes:
-      - ./api:/var/www/api
-      - "./volumes/api:/var/log"
     links:
       - mariadb
-    working_dir: /var/www/api
-    command: npm run start
 
   mariadb:
     image: mariadb:10.3.27
