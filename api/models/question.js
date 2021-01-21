@@ -58,8 +58,7 @@ Question.updateById = (id, question, result) => {
         [question.rule, question.sip, question.answers, id],
         (err, res) => {
             if (err) {
-                console.log("error: ", err);
-                result(null, err);
+                result(err);
                 return;
             }
 

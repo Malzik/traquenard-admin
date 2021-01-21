@@ -68,7 +68,7 @@ exports.update = (req, res) => {
                     });
                 } else {
                     res.status(500).send({
-                        message: "Error updating Question with id " + req.params.questionId
+                        message: err.message
                     });
                 }
             } else res.send(data);

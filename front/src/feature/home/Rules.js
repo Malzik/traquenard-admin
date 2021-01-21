@@ -1,13 +1,10 @@
-import './App.css';
-import React, { useEffect, useState } from 'react';
-import { Rule }                       from "./components/Rule";
-import { Table }                      from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-toastify/dist/ReactToastify.css';
-import { Filer }                      from "./components/Filter";
-import { ToastContainer }             from "react-toastify";
+import React, { useEffect, useState } from "react";
+import { Filer }                      from "./Filter";
+import { Table }       from "react-bootstrap";
+import { Rule }        from "./Rule";
+import { questionApi } from "../../service/question";
 
-function App() {
+export const Rules = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [rules, setRules] = useState([]);
     const [selectedRules, setSelectedRules] = useState([]);
@@ -15,8 +12,7 @@ function App() {
     const [selectedType, setSelectedType] = useState("all");
 
     useEffect(() => {
-        fetch("/api/question")
-            .then(res => res.json())
+        questionApi.getQuestions()
             .then(
                 (result) => {
                     setIsLoaded(true);
@@ -29,6 +25,8 @@ function App() {
                 }
             )
     }, [])
+
+
 
     const onChange = (newType) => {
         setSelectedType(newType.target.id)
@@ -51,7 +49,6 @@ function App() {
     } else {
         return (
             <div>
-                <ToastContainer />
                 <Filer onSelectedType={onChange}/>
                 <Table striped bordered hover variant="dark">
                     <thead>
@@ -76,5 +73,3 @@ function App() {
         )
     }
 }
-
-export default App;

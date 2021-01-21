@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Button }          from "react-bootstrap";
-import { toast }           from "react-toastify";
+import { toast }       from "react-toastify";
+import { questionApi } from "../../service/question";
 
 export const Rule = ({rule, showAnswers}) => {
     const [saveRule] = useState(rule.rule)
     const [question, setQuestion] = useState(rule.rule)
-    const [sip, setSip] = useState(rule.sip)
     const [answers, setAnswers] = useState(JSON.parse(rule.answers))
+    const [sip, setSip] = useState(rule.sip)
 
     const [editingRule, setEditingRule] = useState(false)
     const [editingAnswers, setEditingAnswers] = useState(false)
@@ -14,13 +15,13 @@ export const Rule = ({rule, showAnswers}) => {
 
     const updateRule = () => {
         if(saveRule !== question) {
-            const requestOptions = {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({rule: question, sip: sip, answers: JSON.stringify(answers)})
-            };
-            fetch('/api/question/' + rule.id, requestOptions)
-                .then(() => toast.success("Règle id " + rule.id + " mise à jour"))
+            questionApi
+                .updateRule(rule.id, question, answers, sip)
+                .then((data) => {
+                    console.log("data", data)
+                    toast.success("Règle id " + rule.id + " mise à jour")
+                })
+                .catch(err => toast.error(err.message))
         } else {
             toast.error("Pas de modification")
         }
