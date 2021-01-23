@@ -11,7 +11,8 @@ exports.create = (req, res) => {
         rule: req.body.rule,
         sip: req.body.sip,
         answer: req.body.answer,
-        lang: req.body.lang
+        lang: req.body.lang,
+        type_id: req.body.type_id
     });
 
     Question.create(question, (err, data) => {
@@ -26,6 +27,17 @@ exports.create = (req, res) => {
 
 exports.findAll = (req, res) => {
     Question.findAll((err, data) => {
+        if (err)
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving questions."
+            });
+        else res.send(data);
+    });
+};
+
+exports.findAllByType = (req, res) => {
+    Question.findAllByType(req.params.typeId, (err, data) => {
         if (err)
             res.status(500).send({
                 message:

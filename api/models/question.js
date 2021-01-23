@@ -6,6 +6,7 @@ const Question = function(question) {
     this.sip = question.sip;
     this.answers = question.answers;
     this.lang = question.lang;
+    this.type_id = question.type_id
 };
 
 Question.create = (newQuestion, result) => {
@@ -42,6 +43,20 @@ Question.findById = (questionId, result) => {
 
 Question.findAll = result => {
     sql.query("SELECT question.id, question.rule, question.sip, question.lang, question.answers, type.name as name FROM question LEFT JOIN type ON type.id = question.type_id ORDER BY type.id", (err, res) => {
+        if (err) {
+            console.log("error: ", err);
+            result(null, err);
+            return;
+        }
+
+        result(null, res);
+    });
+};
+
+Question.findAllByType = (id, result) => {
+    sql.query("SELECT * FROM question where type_id = ?",
+        [id],
+        (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(null, err);

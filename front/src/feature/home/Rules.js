@@ -26,8 +26,6 @@ export const Rules = () => {
             )
     }, [])
 
-
-
     const onChange = (newType) => {
         setSelectedType(newType.target.id)
         if(newType.target.id === "all") {
@@ -37,6 +35,7 @@ export const Rules = () => {
             setSelectedRules(filteredRules)
         }
     }
+
     const showAnswers = () => {
         return selectedType === 'all' || selectedType === 'questions';
 
@@ -44,11 +43,9 @@ export const Rules = () => {
 
     if (error) {
         return <div>Erreur : {error.message}</div>;
-    } else if (!isLoaded) {
-        return <div>Chargement...</div>;
-    } else {
+    }else {
         return (
-            <div>
+            <div className={"container-fluid"}>
                 <Filer onSelectedType={onChange}/>
                 <Table striped bordered hover variant="dark">
                     <thead>
@@ -63,6 +60,7 @@ export const Rules = () => {
                     </thead>
                     <tbody>
                     {
+                        (!isLoaded) ? <td colSpan={6} className={"text-center"}><h1>Chargement...</h1></td> :
                         selectedRules.map(rule => {
                             return <Rule rule={rule} key={rule.id} showAnswers={showAnswers()}/>
                         })

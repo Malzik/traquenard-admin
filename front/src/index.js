@@ -1,12 +1,12 @@
-import React                          from 'react';
-import ReactDOM                       from 'react-dom';
+import React                                      from 'react';
+import ReactDOM                                   from 'react-dom';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import './index.css';
-import reportWebVitals                from './reportWebVitals';
-import { initConfig }                 from "./service/config/config";
-import { Template }                   from "./layout/Template";
-import { Rules }                      from "./feature/home/Rules";
-import { AddRule }                    from "./feature/form/AddRule";
+import reportWebVitals                            from './reportWebVitals';
+import { initConfig }                             from "./service/config/config";
+import { Template }                               from "./layout/Template";
+import { Rules }                                  from "./feature/home/Rules";
+import { AddRule }                                from "./feature/form/AddRule";
 
 initConfig()
     .then(() => {

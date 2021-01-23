@@ -28,5 +28,6 @@ app.get("/api", (req, res) => {
 });
 
 require("./routes/question.js")(app);
+require("./routes/type.js")(app);
 
 module.exports = app;

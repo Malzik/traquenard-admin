@@ -22,6 +22,12 @@ export const questionApi = {
                 .then(res =>resolve(res.json()))
                 .catch(err => reject(err))
         }),
+    getQuestionsByType: id =>
+        new Promise((resolve, reject) => {
+            fetch(serverUrl("question/" + id))
+                .then(res =>resolve(res.json()))
+                .catch(err => reject(err))
+        }),
     updateRule: (id, rule, answers, sip) =>
         new Promise((resolve, reject) => {
             fetch(
@@ -34,6 +40,34 @@ export const questionApi = {
             )
                 .then(() => resolve())
                 .catch(err => reject(err))
-        })
+        }),
+    addRule: (type, rule, answers, sip, lang) =>
+        new Promise((resolve, reject) => {
+            fetch(
+                serverUrl("question"),
+                setRequestOptions('POST',{
+                    type_id: type,
+                    rule: rule,
+                    answers: JSON.stringify(rule.answers),
+                    sip: sip,
+                    lang: lang
+                })
+            )
+                .then((res) => {
+                    if(res.status >= 300) {
+                        reject(res.statusText)
+                    }
+                    resolve()
+                })
+                .catch(err => reject(err))
+        }),
+    deleteRule: (id) =>
+        new Promise((resolve, reject) => {
+            fetch(
+                serverUrl("question/" + id),
+                setRequestOptions('DELETE')
+            )
+                .then(() => resolve())
+                .catch(err => reject(err))
+        }),
 }
-//Vous jouez contre ! À tour de rôle : celui qui trouvera le plus de personnage dans le film Le Seigneur des Anneaux gagne, le perdant boit les gorgées en jeu !

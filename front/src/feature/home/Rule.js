@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Button }          from "react-bootstrap";
-import { toast }       from "react-toastify";
-import { questionApi } from "../../service/question";
+import { toast }           from "react-toastify";
+import { questionApi }     from "../../service/question";
+import { Icon }            from "../../components/Icon";
 
 export const Rule = ({rule, showAnswers}) => {
     const [saveRule] = useState(rule.rule)
@@ -17,13 +18,20 @@ export const Rule = ({rule, showAnswers}) => {
         if(saveRule !== question) {
             questionApi
                 .updateRule(rule.id, question, answers, sip)
-                .then((data) => {
-                    console.log("data", data)
-                    toast.success("Règle id " + rule.id + " mise à jour")
-                })
+                .then(()=> toast.success("Règle id " + rule.id + " mise à jour"))
                 .catch(err => toast.error(err.message))
         } else {
             toast.error("Pas de modification")
+        }
+    }
+
+    const deleteRule = () => {
+        const confirmBox = window.confirm('Etes-vous sûr de vouloir supprimer cette règle ?');
+        if(confirmBox) {
+            questionApi
+                .deleteRule(rule.id)
+                .then(() => toast.success("Règle " + rule.id + " supprimée"))
+                .catch(err => toast.error(err))
         }
     }
 
@@ -116,7 +124,16 @@ export const Rule = ({rule, showAnswers}) => {
             {renderRule()}
             {showAnswers && renderAnswers()}
             {renderSip()}
-            <td><Button onClick={updateRule}>✔</Button></td>
+            <td>
+                <div className="btn-group" role="group">
+                    <div>
+                        <Button onClick={updateRule} className={"btn-success btn-rounded"}><Icon icon={"save"} /></Button>
+                    </div>
+                    <div>
+                        <Button onClick={deleteRule} className={"btn-danger ml-1"}><Icon icon={"trash"}/></Button>
+                    </div>
+                </div>
+            </td>
         </tr>
     );
 }
