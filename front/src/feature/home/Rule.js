@@ -7,7 +7,7 @@ import { Icon }            from "../../components/Icon";
 export const Rule = ({rule, showAnswers}) => {
     const [saveRule] = useState(rule.rule)
     const [question, setQuestion] = useState(rule.rule)
-    const [answers, setAnswers] = useState(JSON.parse(rule.answers))
+    const [answers, setAnswers] = useState(rule.answers)
     const [sip, setSip] = useState(rule.sip)
 
     const [editingRule, setEditingRule] = useState(false)
@@ -120,7 +120,7 @@ export const Rule = ({rule, showAnswers}) => {
     return (
         <tr>
             <th scope="row">{rule.id}</th>
-            <td>{rule.name}</td>
+            <td>{rule.type.name}</td>
             {renderRule()}
             {showAnswers && renderAnswers()}
             {renderSip()}

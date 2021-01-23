@@ -13,7 +13,7 @@ const setData = (questions) => {
             data.push({
                 question: question.rule,
                 sip: question.sip,
-                answers: JSON.parse(question.answers),
+                answers: question.answers,
             })
         }
     })
@@ -48,8 +48,8 @@ export const setAllDataWithSubtype = zip => {
                         finalData = {[type.name]: data, ...finalData}
                     })
             })).then(() => {
-                finalData = {[types[0].parent_name]: finalData}
-                zip.file(types[0].parent_name + ".json", JSON.stringify(finalData))
+                finalData = {[types[0].type2.parent_name]: finalData}
+                zip.file(types[0].type2.parent_name + ".json", JSON.stringify(finalData))
             })
         })
         .then(() => zip)

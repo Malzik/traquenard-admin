@@ -15,13 +15,13 @@ export const typeApi = {
         }),
     getTypeWithNoSubType: () =>
         new Promise((resolve, reject) => {
-            fetch(serverUrl("type/noSubType"))
+            fetch(serverUrl("type/noSubtype"))
                 .then(res => resolve(res.json()))
                 .catch(err => reject(err))
         }),
     getTypeWithSubType: () =>
         new Promise((resolve, reject) => {
-            fetch(serverUrl("type/subType"))
+            fetch(serverUrl("type/subtype"))
                 .then(res => resolve(res.json()))
                 .catch(err => reject(err))
         }),

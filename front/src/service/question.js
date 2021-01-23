@@ -24,7 +24,7 @@ export const questionApi = {
         }),
     getQuestionsByType: id =>
         new Promise((resolve, reject) => {
-            fetch(serverUrl("question/" + id))
+            fetch(serverUrl("question/type/" + id))
                 .then(res =>resolve(res.json()))
                 .catch(err => reject(err))
         }),

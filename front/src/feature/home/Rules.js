@@ -31,7 +31,7 @@ export const Rules = () => {
         if(newType.target.id === "all") {
             setSelectedRules(rules);
         } else {
-            const filteredRules = rules.filter(rule => rule.name === newType.target.id)
+            const filteredRules = rules.filter(rule => rule.type.name === newType.target.id)
             setSelectedRules(filteredRules)
         }
     }
