@@ -12,5 +12,5 @@ RUN npm install
 
 EXPOSE 5000
 
-CMD ["node", "./www"]
+CMD ["node", "./app.js"]
 
