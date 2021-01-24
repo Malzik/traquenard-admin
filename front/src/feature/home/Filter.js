@@ -1,5 +1,5 @@
-import React  from 'react';
-import { Form }             from "react-bootstrap";
+import React from 'react';
+import { Form }                       from "react-bootstrap";
 
 export const Filer = ({onSelectedType}) => {
     const types = [
@@ -14,21 +14,22 @@ export const Filer = ({onSelectedType}) => {
         {label: 'Musique', id: 'Musique'},
         {label: 'Série', id: 'Série'},
         {label: 'Sport', id: 'Sport'},
-        ]
+    ]
     return (
         <Form className={"container"}>
-            <div key={`inline-radio`} className="mb-3 form-check">
+            <div key={`inline-radio`} className="mb-3">
                 {types.map((type) => {
                     return (
-                        <Form.Check
-                            inline
-                            label={type.label}
-                            type={"radio"}
-                            id={type.id}
-                            key={type.id}
-                            name={"type"}
-                            defaultChecked={type.checked}
-                            onChange={onSelectedType} />
+                            <Form.Check
+                                inline
+                                label={type.label}
+                                type={"radio"}
+                                id={type.id}
+                                key={type.id}
+                                name={"type"}
+                                defaultChecked={type.checked}
+                                onChange={onSelectedType}
+                            />
                     )
                 })}
             </div>

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Button }          from "react-bootstrap";
 import { toast }           from "react-toastify";
+import { questionApi }     from "../../service/question";
+import { Icon }            from "../../components/Icon";
 
 export const Rule = ({rule, showAnswers}) => {
     const [saveRule] = useState(rule.rule)
     const [question, setQuestion] = useState(rule.rule)
+    const [answers, setAnswers] = useState(rule.answers)
     const [sip, setSip] = useState(rule.sip)
-    const [answers, setAnswers] = useState(JSON.parse(rule.answers))
 
     const [editingRule, setEditingRule] = useState(false)
     const [editingAnswers, setEditingAnswers] = useState(false)
@@ -14,15 +16,22 @@ export const Rule = ({rule, showAnswers}) => {
 
     const updateRule = () => {
         if(saveRule !== question) {
-            const requestOptions = {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({rule: question, sip: sip, answers: JSON.stringify(answers)})
-            };
-            fetch('/api/question/' + rule.id, requestOptions)
-                .then(() => toast.success("Règle id " + rule.id + " mise à jour"))
+            questionApi
+                .updateRule(rule.id, question, answers, sip)
+                .then(()=> toast.success("Règle id " + rule.id + " mise à jour"))
+                .catch(err => toast.error(err.message))
         } else {
             toast.error("Pas de modification")
+        }
+    }
+
+    const deleteRule = () => {
+        const confirmBox = window.confirm('Etes-vous sûr de vouloir supprimer cette règle ?');
+        if(confirmBox) {
+            questionApi
+                .deleteRule(rule.id)
+                .then(() => toast.success("Règle " + rule.id + " supprimée"))
+                .catch(err => toast.error(err))
         }
     }
 
@@ -111,11 +120,20 @@ export const Rule = ({rule, showAnswers}) => {
     return (
         <tr>
             <th scope="row">{rule.id}</th>
-            <td>{rule.name}</td>
+            <td>{rule.type.name}</td>
             {renderRule()}
             {showAnswers && renderAnswers()}
             {renderSip()}
-            <td><Button onClick={updateRule}>✔</Button></td>
+            <td>
+                <div className="btn-group" role="group">
+                    <div>
+                        <Button onClick={updateRule} className={"btn-success btn-rounded"}><Icon icon={"save"} /></Button>
+                    </div>
+                    <div>
+                        <Button onClick={deleteRule} className={"btn-danger ml-1"}><Icon icon={"trash"}/></Button>
+                    </div>
+                </div>
+            </td>
         </tr>
     );
 }

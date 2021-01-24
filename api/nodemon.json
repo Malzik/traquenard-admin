@@ -7,11 +7,6 @@
   ],
   "verbose" : false,
   "watch": [
-    "www.js",
-    "app.js",
-    "config/*",
-    "controllers/*",
-    "models/*",
-    "routes/*"
+    "*.js"
   ]
 }

@@ -1,13 +1,10 @@
-import './App.css';
-import React, { useEffect, useState } from 'react';
-import { Rule }                       from "./components/Rule";
-import { Table }                      from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-toastify/dist/ReactToastify.css';
-import { Filer }                      from "./components/Filter";
-import { ToastContainer }             from "react-toastify";
+import React, { useEffect, useState } from "react";
+import { Filer }                      from "./Filter";
+import { Table }       from "react-bootstrap";
+import { Rule }        from "./Rule";
+import { questionApi } from "../../service/question";
 
-function App() {
+export const Rules = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [rules, setRules] = useState([]);
     const [selectedRules, setSelectedRules] = useState([]);
@@ -15,8 +12,7 @@ function App() {
     const [selectedType, setSelectedType] = useState("all");
 
     useEffect(() => {
-        fetch("/api/question")
-            .then(res => res.json())
+        questionApi.getQuestions()
             .then(
                 (result) => {
                     setIsLoaded(true);
@@ -35,10 +31,11 @@ function App() {
         if(newType.target.id === "all") {
             setSelectedRules(rules);
         } else {
-            const filteredRules = rules.filter(rule => rule.name === newType.target.id)
+            const filteredRules = rules.filter(rule => rule.type.name === newType.target.id)
             setSelectedRules(filteredRules)
         }
     }
+
     const showAnswers = () => {
         return selectedType === 'all' || selectedType === 'questions';
 
@@ -46,12 +43,9 @@ function App() {
 
     if (error) {
         return <div>Erreur : {error.message}</div>;
-    } else if (!isLoaded) {
-        return <div>Chargement...</div>;
-    } else {
+    }else {
         return (
-            <div>
-                <ToastContainer />
+            <div className={"container-fluid"}>
                 <Filer onSelectedType={onChange}/>
                 <Table striped bordered hover variant="dark">
                     <thead>
@@ -66,6 +60,7 @@ function App() {
                     </thead>
                     <tbody>
                     {
+                        (!isLoaded) ? <tr><td colSpan={6} className={"text-center"}><h1>Chargement...</h1></td></tr> :
                         selectedRules.map(rule => {
                             return <Rule rule={rule} key={rule.id} showAnswers={showAnswers()}/>
                         })
@@ -76,5 +71,3 @@ function App() {
         )
     }
 }
-
-export default App;

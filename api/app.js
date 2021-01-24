@@ -1,17 +1,23 @@
 const express = require("express");
-const path = require('path');
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+const cors = require('cors');
+const logger = require('./services/logger/logger');
 
 const app = express();
 
-app.use(logger('dev'));
+const authRouter = require('./features/auth/auth.controller');
+const questionRouter = require('./features/question/question.controller');
+const typeRouter = require('./features/type/type.controller');
+const defaultController = require("./features/default.controller");
+const db = require("./services/db/db");
+
 app.use(express.json());
-app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
+app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -23,10 +29,16 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get("/api", (req, res) => {
-    res.json({ message: "Welcome to aheroin application." });
-});
+app.use('/api/auth', authRouter);
+app.use('/api/question', questionRouter);
+app.use('/api/type', typeRouter);
 
-require("./routes/question.js")(app);
+app.use(defaultController);
+
+// db.getConnection().connection.sync()
+
+app.server = app.listen(process.env.PORT || 5000, () => {
+    logger.success(`Listening on port ${app.server.address().port}`);
+});
 
 module.exports = app;
