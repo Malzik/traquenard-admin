@@ -4,9 +4,23 @@ const User = userDao.UserTable;
 const Role = userDao.RoleTable;
 
 const Op = userDao.Sequelize.Op;
+const tokenList = {}
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+
+const createToken = (user, roles, secret) => {
+    return jwt.sign({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            roles: roles
+        },
+        secret,
+        {
+            expiresIn: 86400 // 24 hours
+        });
+}
 
 const authDao = {
     signup: (req, res) =>
@@ -56,7 +70,7 @@ const authDao = {
                     if (!passwordIsValid) {
                         return res.status(401).send({
                             accessToken: null,
-                            message: "Invalid Password!"
+                            message: "Mot de passe invalide !"
                         });
                     }
                     const authorities = [];
@@ -64,27 +78,39 @@ const authDao = {
                         for (let i = 0; i < roles.length; i++) {
                             authorities.push("ROLE_" + roles[i].name.toUpperCase());
                         }
-                        const token = jwt.sign({
-                                id: user.id,
-                                username: user.username,
-                                email: user.email,
-                                roles: authorities
-                            },
-                            config.secret,
-                            {
-                                expiresIn: 86400 // 24 hours
-                            });
+                        const token = createToken(user, authorities, config.secret)
+                        const refreshToken = createToken(user, authorities, config.refreshTokenSecret)
+                        tokenList[refreshToken] = {token, refreshToken}
 
                         resolve(res.status(200).send({
                             id: user.id,
                             username: user.username,
                             email: user.email,
                             roles: authorities,
-                            accessToken: token
+                            accessToken: token,
+                            refreshToken: token
                         }));
                     });
                 })
                 .catch(err => reject(err));
+        }),
+    refresh: (req, res) =>
+        new Promise((resolve, reject) => {
+            const postData = req.body
+
+            if ((postData.refreshToken) && (postData.refreshToken in tokenList)) {
+                const oldToken = jwt.decode(tokenList[postData.refreshToken])
+                const token = createToken(oldToken.payload, oldToken.payload.roles, config.secret)
+                const refreshToken = createToken(oldToken.payload, oldToken.payload.roles, config.refreshTokenSecret)
+
+                tokenList[refreshToken] = {token, refreshToken}
+                resolve(res.status(200).send({
+                    accessToken: token,
+                    refreshToken: token
+                }));
+            } else {
+                reject(res.status(404).send('Invalid request'))
+            }
         })
 };
 

@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
-import { Button }          from "react-bootstrap";
-import { toast }           from "react-toastify";
-import { questionApi }     from "../../service/question";
-import { Icon }            from "../../components/Icon";
+import React, { useRef, useState } from 'react';
+import { Button }                  from "react-bootstrap";
+import { toast }                   from "react-toastify";
+import { questionApi }             from "../../service/question";
+import { Icon }                    from "../../components/Icon";
+import autosize                    from "autosize";
+import { text }                    from "@fortawesome/fontawesome-svg-core";
 
 export const Rule = ({rule, showAnswers}) => {
-    const [saveRule] = useState(rule.rule)
+    const style = {
+        maxHeight: "75px",
+        minHeight: "38px",
+        resize: "none",
+        padding: "9px",
+        boxSizing: "border-box",
+        fontSize: "15px"
+    };
+    const [saveRule] = useState(rule)
     const [question, setQuestion] = useState(rule.rule)
     const [answers, setAnswers] = useState(rule.answers)
     const [sip, setSip] = useState(rule.sip)
@@ -13,9 +23,10 @@ export const Rule = ({rule, showAnswers}) => {
     const [editingRule, setEditingRule] = useState(false)
     const [editingAnswers, setEditingAnswers] = useState(false)
     const [editingSip, setEditingSip] = useState(false)
+    const [visible, setVisible] = useState(true)
 
     const updateRule = () => {
-        if(saveRule !== question) {
+        if(saveRule.rule !== question || saveRule.sip !== sip || saveRule.answers !== answers) {
             questionApi
                 .updateRule(rule.id, question, answers, sip)
                 .then(()=> toast.success("Règle id " + rule.id + " mise à jour"))
@@ -30,7 +41,10 @@ export const Rule = ({rule, showAnswers}) => {
         if(confirmBox) {
             questionApi
                 .deleteRule(rule.id)
-                .then(() => toast.success("Règle " + rule.id + " supprimée"))
+                .then(() => {
+                    toast.success("Règle " + rule.id + " supprimée")
+                    setVisible(false)
+                })
                 .catch(err => toast.error(err))
         }
     }
@@ -58,13 +72,14 @@ export const Rule = ({rule, showAnswers}) => {
         if(editingRule) {
             return (
                 <td>
-                    <input
+                    {<textarea
+                        style={style}
                         autoFocus
-                        className="w-100 form-control"
+                        className="form-control"
                         value={question}
                         onChange={e => setQuestion(e.target.value)}
                         onBlur={() => onBlurRule()}
-                    />
+                    />}
                 </td>
             )
         }
@@ -89,8 +104,15 @@ export const Rule = ({rule, showAnswers}) => {
         if(answers !== null) {
             if(editingAnswers) {
                 return (
-                    <td>
-                        <input
+                    <td width={500}>
+                        <textarea
+                            style={{
+                                maxHeight: "75px",
+                                minHeight: "200px",
+                                resize: "none",
+                                padding: "9px",
+                                boxSizing: "border-box",
+                                fontSize: "15px"}}
                             autoFocus
                             className="form-control"
                             value={JSON.stringify(answers)}
@@ -117,7 +139,7 @@ export const Rule = ({rule, showAnswers}) => {
         }
     }
 
-    return (
+    return visible ? (
         <tr>
             <th scope="row">{rule.id}</th>
             <td>{rule.type.name}</td>
@@ -135,5 +157,5 @@ export const Rule = ({rule, showAnswers}) => {
                 </div>
             </td>
         </tr>
-    );
+    ) : null;
 }

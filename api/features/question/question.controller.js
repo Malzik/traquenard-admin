@@ -37,7 +37,7 @@ router.post('/', [authJwt.verifyToken], (req, res) => {
 
 router.put('/:id', [authJwt.verifyToken], (req, res) => {
     dao
-        .update(req.body)
+        .update(req.params.id, req.body)
         .then(() => {
             res.sendStatus(200);
         })

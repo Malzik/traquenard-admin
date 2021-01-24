@@ -18,6 +18,22 @@ export const authApi = {
                     }
                     reject(res)
                 })
-                .catch(err => reject(err))
+                .catch(err => {
+                    reject(err.response.data)
+                })
+        }),
+    refresh: refreshToken =>
+        new Promise((resolve, reject) => {
+            axios
+                .post(serverUrl("refresh"), { refreshToken: refreshToken})
+                .then(res => {
+                    if(res.status === 200) {
+                        resolve(res)
+                    }
+                    reject(res)
+                })
+                .catch(err => {
+                    reject(err.response.data)
+                })
         })
 }

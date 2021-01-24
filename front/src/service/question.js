@@ -1,77 +1,54 @@
-import { getConfig } from "./config/config";
-import { store }     from "./store/store";
-
-const serverUrl = url => {
-    const serverUrl = process.env.NODE_ENV === 'production' ? getConfig().url_prod : getConfig().url_dev;
-
-    return serverUrl + "/question/" + url;
-}
-
-const setRequestOptions = (method = "GET", body) => {
-    const token = store.getState().auth.token;
-    return {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(body)
-    };
-}
+import { requestApi } from "./request";
 
 export const questionApi = {
     getQuestions: () =>
         new Promise((resolve, reject) => {
-            fetch(serverUrl(""), setRequestOptions())
-                .then(res =>resolve(res.json()))
+            requestApi
+                .get("question")
+                .then(res =>resolve(res))
                 .catch(err => reject(err))
         }),
     getQuestionsByType: id =>
         new Promise((resolve, reject) => {
-            fetch(serverUrl("type/" + id), setRequestOptions())
-                .then(res =>resolve(res.json()))
+            requestApi
+                .get("question/type" + id)
+                .then(res =>resolve(res))
                 .catch(err => reject(err))
         }),
     updateRule: (id, rule, answers, sip) =>
         new Promise((resolve, reject) => {
-            fetch(
-                serverUrl(id),
-                setRequestOptions('PUT',{
-                    rule: null,
+            requestApi
+                .put("question/" + id, {
+                    rule: rule,
                     answers: JSON.stringify(rule.answers),
                     sip: sip
                 })
-            )
-                .then(() => resolve())
+                .then(res =>resolve(res))
                 .catch(err => reject(err))
         }),
     addRule: (type, rule, answers, sip, lang) =>
         new Promise((resolve, reject) => {
-            fetch(
-                serverUrl(""),
-                setRequestOptions('POST',{
+            requestApi
+                .post("question", {
                     type_id: type,
                     rule: rule,
                     answers: JSON.stringify(rule.answers),
                     sip: sip,
                     lang: lang
                 })
-            )
-                .then((res) => {
+                .then(res =>{
                     if(res.status >= 300) {
                         reject(res.statusText)
                     }
-                    resolve()
+                    resolve(res)
                 })
                 .catch(err => reject(err))
         }),
     deleteRule: (id) =>
         new Promise((resolve, reject) => {
-            fetch(
-                serverUrl(id),
-                setRequestOptions('DELETE')
-            )
-                .then(() => resolve())
+            requestApi
+                .delete("question/" + id)
+                .then(res =>resolve(res))
                 .catch(err => reject(err))
         }),
 }

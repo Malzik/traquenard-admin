@@ -5,38 +5,39 @@ import { toast }                                        from "react-toastify";
 import { typeApi }                                      from "../../service/type";
 
 export const AddRule = () => {
-    const [sip, setSip] = useState(0);
-    const [type, setType] = useState('everyone');
+    const [sip, setSip] = useState(null);
+    const [type, setType] = useState(null);
     const [lang, setLang] = useState('fr');
-    const [rule, setRule] = useState("");
-    const [answers, setAnswers] = useState("");
+    const [rule, setRule] = useState(null);
+    const [answers, setAnswers] = useState(null);
     const [types, setTypes] = useState([])
 
     useEffect(() => {
         typeApi
             .getTypes()
             .then(res => {
-                console.log(res)
                 setTypes(res)
             })
     }, [])
 
+    const verifyField = field => field !== null && field.trim().length > 0
+
     const handleSubmit = () => {
-        if (rule.trim().length === 0) {
+        if (!verifyField(rule)) {
             console.log("rule error")
             return;
         }
-        if (lang.trim().length === 0) {
+        if (!verifyField(lang)) {
             console.log("lang error")
             return;
         }
-        if (type.trim().length === 0) {
+        if (!verifyField(type)) {
             console.log("type error")
             return;
         }
         questionApi
             .addRule(type, rule, answers, sip, lang)
-            .then(() => toast.success("Règle crée"))
+            .then(() => toast.success("Règle créé"))
             .catch(err => toast.error(err))
     }
 
@@ -52,6 +53,7 @@ export const AddRule = () => {
                     required
                     onChange={event => setType(event.target.value)}
                 >
+                    <option defaultValue={true}>-- Choisi un type --</option>
                     {
                         types.map(type => <option key={type.id} value={type.id}>{type.name}</option>)
                     }

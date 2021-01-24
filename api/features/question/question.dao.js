@@ -99,6 +99,7 @@ const questionDao = {
         }),
     update: (id, newQuestion) =>
         new Promise((resolve, reject) => {
+            console.log(id, newQuestion)
             QuestionTable.findByPk(id)
                 .then(question =>
                     question

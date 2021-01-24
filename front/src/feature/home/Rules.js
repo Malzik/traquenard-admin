@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Filer }                      from "./Filter";
-import { Table }       from "react-bootstrap";
-import { Rule }        from "./Rule";
-import { questionApi } from "../../service/question";
+import { Table }                      from "react-bootstrap";
+import { Rule }                       from "./Rule";
+import { questionApi }                from "../../service/question";
+import { store }                      from "../../service/store/store";
+import { setRules as setStoreRules }                    from "./store/actions";
 
 export const Rules = () => {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -12,18 +14,26 @@ export const Rules = () => {
     const [selectedType, setSelectedType] = useState("all");
 
     useEffect(() => {
-        questionApi.getQuestions()
-            .then(
-                (result) => {
-                    setIsLoaded(true);
-                    setRules(result);
-                    setSelectedRules(result);
-                },
-                (error) => {
-                    setIsLoaded(true);
-                    setError(error);
-                }
-            )
+        const storeRules = store.getState().rules.rules;
+        if (storeRules.length > 0) {
+            setRules(storeRules);
+            setSelectedRules(storeRules);
+            setIsLoaded(true);
+        } else {
+            questionApi.getQuestions()
+                .then(
+                    (result) => {
+                        store.dispatch(setStoreRules(result))
+                        setRules(result);
+                        setSelectedRules(result);
+                        setIsLoaded(true);
+                    },
+                    (error) => {
+                        setError(error);
+                        setIsLoaded(true);
+                    }
+                )
+        }
     }, [])
 
     const onChange = (newType) => {
@@ -45,7 +55,7 @@ export const Rules = () => {
         return <div>Erreur : {error.message}</div>;
     }else {
         return (
-            <div className={"container-fluid"}>
+            <div>
                 <Filer onSelectedType={onChange}/>
                 <Table striped bordered hover variant="dark">
                     <thead>

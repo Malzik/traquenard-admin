@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form }                       from "react-bootstrap";
+import "./Filter.css"
 
 export const Filer = ({onSelectedType}) => {
     const types = [
@@ -16,7 +17,7 @@ export const Filer = ({onSelectedType}) => {
         {label: 'Sport', id: 'Sport'},
     ]
     return (
-        <Form className={"container"}>
+        <Form className={"container mt-2"}>
             <div key={`inline-radio`} className="mb-3">
                 {types.map((type) => {
                     return (
