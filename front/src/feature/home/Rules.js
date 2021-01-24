@@ -60,7 +60,7 @@ export const Rules = () => {
                     </thead>
                     <tbody>
                     {
-                        (!isLoaded) ? <td colSpan={6} className={"text-center"}><h1>Chargement...</h1></td> :
+                        (!isLoaded) ? <tr><td colSpan={6} className={"text-center"}><h1>Chargement...</h1></td></tr> :
                         selectedRules.map(rule => {
                             return <Rule rule={rule} key={rule.id} showAnswers={showAnswers()}/>
                         })

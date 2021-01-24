@@ -11,18 +11,6 @@ USE `traquenard`;
 
 SET NAMES utf8mb4;
 
-DROP TABLE IF EXISTS `migration_versions`;
-CREATE TABLE `migration_versions` (
-  `version` varchar(14) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `executed_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
-  PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `migration_versions` (`version`, `executed_at`) VALUES
-('20200427135628',	'2020-04-29 10:31:04'),
-('20200429095849',	'2020-04-29 10:31:04'),
-('20200429110122',	'2020-05-06 10:24:53');
-
 DROP TABLE IF EXISTS `proposition`;
 CREATE TABLE `proposition` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -920,18 +908,4 @@ INSERT INTO `type` (`id`, `subtype_id`, `name`) VALUES
 (9,	5,	'Musique'),
 (10,	5,	'Série'),
 (11,	5,	'Sport');
-
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `roles` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_8D93D649E7927C74` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `user` (`id`, `email`, `roles`, `password`) VALUES
-(1,	'traquenard@epsi.fr',	'[\"ROLE_ADMIN\",\"ROLE_USER\"]',	'$argon2id$v=19$m=65536,t=4,p=1$cHY63jIs3QajBCRJK8h08w$4o+cPU9Bcgl7e+d6Y2XA3Uo4Qp+wOXEKZU4vtHbh9fA');
-
 -- 2021-01-19 14:30:30

@@ -1,16 +1,20 @@
 import { getConfig } from "./config/config";
-import { toast }     from "react-toastify";
+import { store }     from "./store/store";
 
 const serverUrl = url => {
     const serverUrl = process.env.NODE_ENV === 'production' ? getConfig().url_prod : getConfig().url_dev;
 
-    return serverUrl + "/" + url;
+    return serverUrl + "/question/" + url;
 }
 
-const setRequestOptions = (method, body) => {
+const setRequestOptions = (method = "GET", body) => {
+    const token = store.getState().auth.token;
     return {
         method: method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(body)
     };
 }
@@ -18,20 +22,20 @@ const setRequestOptions = (method, body) => {
 export const questionApi = {
     getQuestions: () =>
         new Promise((resolve, reject) => {
-            fetch(serverUrl("question"))
+            fetch(serverUrl(""), setRequestOptions())
                 .then(res =>resolve(res.json()))
                 .catch(err => reject(err))
         }),
     getQuestionsByType: id =>
         new Promise((resolve, reject) => {
-            fetch(serverUrl("question/type/" + id))
+            fetch(serverUrl("type/" + id), setRequestOptions())
                 .then(res =>resolve(res.json()))
                 .catch(err => reject(err))
         }),
     updateRule: (id, rule, answers, sip) =>
         new Promise((resolve, reject) => {
             fetch(
-                serverUrl("question/" + id),
+                serverUrl(id),
                 setRequestOptions('PUT',{
                     rule: null,
                     answers: JSON.stringify(rule.answers),
@@ -44,7 +48,7 @@ export const questionApi = {
     addRule: (type, rule, answers, sip, lang) =>
         new Promise((resolve, reject) => {
             fetch(
-                serverUrl("question"),
+                serverUrl(""),
                 setRequestOptions('POST',{
                     type_id: type,
                     rule: rule,
@@ -64,7 +68,7 @@ export const questionApi = {
     deleteRule: (id) =>
         new Promise((resolve, reject) => {
             fetch(
-                serverUrl("question/" + id),
+                serverUrl(id),
                 setRequestOptions('DELETE')
             )
                 .then(() => resolve())

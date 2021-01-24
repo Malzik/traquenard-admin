@@ -28,7 +28,7 @@ export const Header = () => {
                      width="40"
                      height="40"/>
             </Navbar.Brand>
-            <Nav navbar className="mr-auto">
+            <Nav navbar className="ml-auto">
                 <Nav.Item key="/">
                     <NavLink to="/" className={'mr-2 ml-2'}><span>Règles</span></NavLink>
                 </Nav.Item>
