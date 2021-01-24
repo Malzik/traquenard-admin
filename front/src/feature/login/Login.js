@@ -35,11 +35,6 @@ export const Login = () => {
             .then(user => {
                 setCookie("token", user.data.accessToken, {path: "/"})
                 setCookie("user", user.data, {path: "/"})
-                store.dispatch(authenticate())
-                store.dispatch(updateAuth(
-                    user.data,
-                    user.data.accessToken
-                ));
             })
             .catch(err => toast.error(err.statusText))
     }
