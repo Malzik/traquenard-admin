@@ -6,6 +6,7 @@ import * as FileSaver                                      from 'file-saver';
 import { setAllDataWithoutSubtype, setAllDataWithSubtype } from "../service/export";
 import { store }                                           from "../service/store/store";
 import { toast }                                           from "react-toastify";
+import { AuthContext }                                     from "../feature/login/AuthContext";
 
 export const Header = () => {
     const exportRules = () => {
@@ -34,17 +35,29 @@ export const Header = () => {
                      width="40"
                      height="40"/>
             </Navbar.Brand>
-            <Nav navbar className="ml-auto">
-                <Nav.Item key="/">
-                    <NavLink to="/" className={'mr-2 ml-2'}><span>Règles</span></NavLink>
-                </Nav.Item>
-                <Nav.Item key="/add">
-                    <NavLink to="/add" className={'mr-2 ml-2'}><span>Ajouter une règle</span></NavLink>
-                </Nav.Item>
-                <Nav.Item key="/export">
-                    <NavLink className={'mr-2 ml-2'} to=""><span onClick={exportRules}>Exporter les règles</span></NavLink>
-                </Nav.Item>
-            </Nav>
+            <AuthContext.Consumer>
+                {({ loggedIn }) => (
+                    loggedIn ? (
+                        <Nav navbar className="ml-auto">
+                            <Nav.Item key="/">
+                                <NavLink to="/" className={'mr-2 ml-2'}><span>Règles</span></NavLink>
+                            </Nav.Item>
+                            <Nav.Item key="/add">
+                                <NavLink to="/add" className={'mr-2 ml-2'}><span>Ajouter une règle</span></NavLink>
+                            </Nav.Item>
+                            <Nav.Item key="/export">
+                                <NavLink className={'mr-2 ml-2'} to=""><span onClick={exportRules}>Exporter les règles</span></NavLink>
+                            </Nav.Item>
+                        </Nav>
+                    ) : (
+                        <Nav navbar className="ml-auto">
+                            <Nav.Item key="/login">
+                                <NavLink to="/login" className={'mr-2 ml-2'}><span>Se connecter</span></NavLink>
+                            </Nav.Item>
+                        </Nav>
+                    )
+                )}
+            </AuthContext.Consumer>
         </Navbar>
     );
 }

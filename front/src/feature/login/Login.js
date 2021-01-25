@@ -9,8 +9,9 @@ import { authenticate, updateAuth } from '../../service/auth/actions';
 import { Redirect }                 from "react-router-dom";
 import { Alert }                    from "react-bootstrap";
 import { toast }                    from "react-toastify";
+import withAuthProps                from "../withAuthProps";
 
-export const Login = () => {
+const Login = ({ loggedIn, setLoggedIn }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null)
@@ -22,6 +23,7 @@ export const Login = () => {
 
     const shouldRedirect = () => {
         if (cookie.token) {
+            setLoggedIn(true)
             store.dispatch(authenticate())
             store.dispatch(updateAuth(
                 cookie.user,
@@ -88,3 +90,5 @@ export const Login = () => {
         shouldRedirect() ? <Redirect to={previous} /> : login()
     );
 }
+
+export default withAuthProps(Login)
