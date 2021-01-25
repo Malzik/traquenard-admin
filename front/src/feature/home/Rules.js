@@ -37,23 +37,20 @@ export const Rules = () => {
     }, [])
 
     const onChange = (newType) => {
-        setSelectedType(newType.target.id)
-        if(newType.target.id === "all") {
+        setSelectedType(newType.target.value)
+        if(newType.target.value === "all") {
             setSelectedRules(rules);
         } else {
-            const filteredRules = rules.filter(rule => rule.type.name === newType.target.id)
+            const filteredRules = rules.filter(rule => rule.type.name === newType.target.value)
             setSelectedRules(filteredRules)
         }
     }
 
-    const showAnswers = () => {
-        return selectedType === 'all' || selectedType === 'questions';
-
-    }
+    const showAnswers = () =>  selectedType === 'all' || selectedType === 'questions';
 
     if (error) {
         return <div>Erreur : {error.message}</div>;
-    }else {
+    } else {
         return (
             <div>
                 <Filer onSelectedType={onChange}/>

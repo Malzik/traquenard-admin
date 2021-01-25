@@ -11,7 +11,7 @@ import { Alert }                    from "react-bootstrap";
 import { toast }                    from "react-toastify";
 import withAuthProps                from "../withAuthProps";
 
-const Login = ({ loggedIn, setLoggedIn }) => {
+const Login = ({ setLoggedIn }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null)

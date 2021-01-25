@@ -1,6 +1,9 @@
-import React from 'react';
-import { Form }                       from "react-bootstrap";
-import "./Filter.css"
+import React            from 'react';
+import { Form }         from "react-bootstrap";
+import Radio            from "@material-ui/core/Radio";
+import FormControl      from "@material-ui/core/FormControl";
+import RadioGroup       from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 export const Filer = ({onSelectedType}) => {
     const types = [
@@ -18,22 +21,15 @@ export const Filer = ({onSelectedType}) => {
     ]
     return (
         <Form className={"container mt-2"}>
-            <div key={`inline-radio`} className="mb-3">
-                {types.map((type) => {
-                    return (
-                            <Form.Check
-                                inline
-                                label={type.label}
-                                type={"radio"}
-                                id={type.id}
-                                key={type.id}
-                                name={"type"}
-                                defaultChecked={type.checked}
-                                onChange={onSelectedType}
-                            />
-                    )
-                })}
-            </div>
+            <FormControl component="fieldset">
+                <RadioGroup row defaultValue={"all"} onChange={onSelectedType}>
+                    {types.map((type) => {
+                        return (
+                            <FormControlLabel key={type.id} value={type.id} control={<Radio />} label={type.label}/>
+                        )
+                    })}
+                </RadioGroup>
+            </FormControl>
         </Form>
     );
 }
