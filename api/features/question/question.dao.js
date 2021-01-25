@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const { Op } = require("sequelize");
 
 const db = require('../../services/db/db');
 const logger = require('../../services/logger/logger');
@@ -69,6 +70,25 @@ const questionDao = {
                 .then(results => resolve(results))
                 .catch(err => reject(err));
         }),
+    getQuestionsByLang: lang =>
+        new Promise((resolve, reject) => {
+            QuestionTable.findAll({
+                include: [{
+                    model: TypeTable,
+                    as: "type",
+                    required: true,
+                    attributes: ['name'],
+                }],
+                where: {
+                    lang: {
+                        [Op.eq]: lang
+                    }
+                },
+                order: [['type_id', 'ASC']]
+            })
+                .then(result => resolve(result))
+                .catch(err => reject(err));
+        }),
     getById: id =>
         new Promise((resolve, reject) => {
             QuestionTable.findByPk(id)
@@ -121,7 +141,7 @@ const questionDao = {
 
                 )
                 .catch(err => reject(err));
-        }),
+        })
 };
 
 module.exports = questionDao;

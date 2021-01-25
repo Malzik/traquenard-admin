@@ -12,6 +12,13 @@ router.get('/', [authJwt.verifyToken], (req, res) => {
         .catch(err => replyServerError(err, res));
 });
 
+router.get('/lang/:lang', [authJwt.verifyToken], (req, res) => {
+    dao
+        .getQuestionsByLang(req.params.lang)
+        .then(response => res.status(200).send(response))
+        .catch(err => replyServerError(err, res));
+});
+
 router.get('/:id', [authJwt.verifyToken], (req, res) => {
     dao
         .getById(req.params.id)

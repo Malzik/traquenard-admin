@@ -4,8 +4,11 @@ import Radio            from "@material-ui/core/Radio";
 import FormControl      from "@material-ui/core/FormControl";
 import RadioGroup       from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import MenuItem         from "@material-ui/core/MenuItem";
+import Select           from "@material-ui/core/Select";
+import { Button }       from "@material-ui/core";
 
-export const Filer = ({onSelectedType}) => {
+export const Filer = ({onSelectedType, onLangChange}) => {
     const types = [
         {label: 'Tout', id: 'all', checked: true},
         {label: 'Everyone', id: 'everyone'},
@@ -20,7 +23,7 @@ export const Filer = ({onSelectedType}) => {
         {label: 'Sport', id: 'Sport'},
     ]
     return (
-        <Form className={"container mt-2"}>
+        <Form className={"mt-2 m-auto"} style={{display: "flex", justifyContent: "space-around"}}>
             <FormControl component="fieldset">
                 <RadioGroup row defaultValue={"all"} onChange={onSelectedType}>
                     {types.map((type) => {
@@ -29,6 +32,17 @@ export const Filer = ({onSelectedType}) => {
                         )
                     })}
                 </RadioGroup>
+            </FormControl>
+            <FormControl className={"mt-1"}>
+                <Select
+                    labelId="demo-simple-select-placeholder-label-label"
+                    id="demo-simple-select-placeholder-label"
+                    onChange={onLangChange}
+                    defaultValue={"fr"}
+                >
+                    <MenuItem value={"fr"}>Fr</MenuItem>
+                    <MenuItem value={"en"}>En</MenuItem>
+                </Select>
             </FormControl>
         </Form>
     );

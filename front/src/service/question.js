@@ -8,6 +8,13 @@ export const questionApi = {
                 .then(res =>resolve(res))
                 .catch(err => reject(err))
         }),
+    getQuestionsByLang: lang =>
+        new Promise((resolve, reject) => {
+            requestApi
+                .get("question/lang/" + lang)
+                .then(res =>resolve(res))
+                .catch(err => reject(err))
+    }),
     getQuestionsByType: id =>
         new Promise((resolve, reject) => {
             requestApi

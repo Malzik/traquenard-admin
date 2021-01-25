@@ -12,6 +12,7 @@ export const Rules = () => {
     const [selectedRules, setSelectedRules] = useState([]);
     const [error, setError] = useState(null);
     const [selectedType, setSelectedType] = useState("all");
+    const [lang, setLang] = useState("fr");
 
     useEffect(() => {
         const storeRules = store.getState().rules.rules;
@@ -20,7 +21,7 @@ export const Rules = () => {
             setSelectedRules(storeRules);
             setIsLoaded(true);
         } else {
-            questionApi.getQuestions()
+            questionApi.getQuestionsByLang(lang)
                 .then(
                     (result) => {
                         store.dispatch(setStoreRules(result))
@@ -46,6 +47,23 @@ export const Rules = () => {
         }
     }
 
+    const onLangChange = (newLang) => {
+        setLang(newLang.target.value)
+        questionApi.getQuestionsByLang(newLang.target.value)
+            .then(
+                (result) => {
+                    store.dispatch(setStoreRules(result))
+                    setRules(result);
+                    setSelectedRules(result);
+                    setIsLoaded(true);
+                },
+                (error) => {
+                    setError(error);
+                    setIsLoaded(true);
+                }
+            )
+    }
+
     const showAnswers = () =>  selectedType === 'all' || selectedType === 'questions';
 
     if (error) {
@@ -53,7 +71,7 @@ export const Rules = () => {
     } else {
         return (
             <div>
-                <Filer onSelectedType={onChange}/>
+                <Filer onSelectedType={onChange} onLangChange={onLangChange}/>
                 <Table striped bordered hover variant="dark">
                     <thead>
                     <tr>
@@ -69,7 +87,10 @@ export const Rules = () => {
                     {
                         (!isLoaded) ? <tr><td colSpan={6} className={"text-center"}><h1>Chargement...</h1></td></tr> :
                         selectedRules.map(rule => {
-                            return <Rule rule={rule} key={rule.id} showAnswers={showAnswers()}/>
+                            return <Rule
+                                rule={rule}
+                                key={rule.id}
+                                showAnswers={showAnswers()}/>
                         })
                     }
                     </tbody>
