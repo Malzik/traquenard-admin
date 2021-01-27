@@ -57,7 +57,8 @@ export const Rules = () => {
                     store.dispatch(setStoreRules(result))
                     setTranslateMode(false)
                     setRules(result);
-                    setSelectedRules(result);
+                    const filteredRules = result.filter(rule => rule.type.name === selectedType)
+                    setSelectedRules(filteredRules)
                     setIsLoaded(true);
                 },
                 (error) => {

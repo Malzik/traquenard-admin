@@ -20,6 +20,7 @@ const QuestionTable = db
         },
         answers: {
             type: Sequelize.JSON,
+            required: false
         },
         lang: {
             type: Sequelize.STRING,

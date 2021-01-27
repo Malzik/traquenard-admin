@@ -34,7 +34,7 @@ export const questionApi = {
             requestApi
                 .put("question/" + id, {
                     rule: rule,
-                    answers: JSON.stringify(rule.answers),
+                    answers: rule.answers,
                     sip: sip
                 })
                 .then(res =>resolve(res))
@@ -46,7 +46,7 @@ export const questionApi = {
                 .post("question", {
                     type_id: type,
                     rule: rule,
-                    answers: JSON.stringify(rule.answers),
+                    answers: answers,
                     sip: sip,
                     lang: lang
                 })
@@ -64,7 +64,7 @@ export const questionApi = {
                 .post("question/translate", {
                     type_id: translateRule.type_id,
                     rule: translateRule.rule,
-                    answers: null,
+                    answers: translateRule.answers,
                     sip: translateRule.sip,
                     lang: translateRule.lang,
                     translation_id: translateRule.translation_id

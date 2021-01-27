@@ -42,7 +42,7 @@ export const TranslateRule = ({rule, lang, showAnswers}) => {
                 .deleteRule(translateRule.id)
                 .then(() => {
                     toast.success("Règle " + rule.id + " supprimée")
-                    setRule(translateRule, lang)
+                    setRule(rule, lang)
                 })
                 .catch(err => toast.error(err))
         }
@@ -89,11 +89,12 @@ export const TranslateRule = ({rule, lang, showAnswers}) => {
     }
 
     return !loading ? (
-        <tr>
+        <tr style={{ backgroundColor: "#9AA9B8"}}>
             <th scope="row">{translateRule.id}</th>
             <td>{rule.type.name}</td>
             <Question question={translateRule.rule} setQuestion={setQuestion} />
-            {showAnswers && <Answers answers={translateRule.answers} setAnswers={setAnswers} />}
+            {showAnswers &&
+            translateRule.type === "questions" ? <Answers answers={[]} setAnswers={setAnswers} /> : <td/>}
             <Sip sip={translateRule.sip} setSip={setSip} />
             <td>
                 <div className="btn-group" role="group">
