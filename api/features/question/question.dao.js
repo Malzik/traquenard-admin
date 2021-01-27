@@ -31,8 +31,16 @@ const QuestionTable = db
                 model: 'Type',
                 key: 'id'
             }
+        },
+        translation_id: {
+            type: Sequelize.INTEGER,
+            allowNull: true,
+            references: {
+                model: 'Question',
+                key: 'id'
+            }
         }
-}, {tableName: "question"});
+    }, {tableName: "question"});
 
 const TypeTable = db
     .getConnection()
@@ -54,7 +62,11 @@ QuestionTable.belongsTo(TypeTable, {
     foreignKey: 'type_id',
     as: "type"
 })
-
+QuestionTable.belongsTo(QuestionTable, {
+    foreignKey: 'id',
+    targetKey: 'translation_id',
+    as: "translate"
+})
 const questionDao = {
     get: () =>
         new Promise((resolve, reject) => {
@@ -105,6 +117,34 @@ const questionDao = {
                 .then(result => resolve(result))
                 .catch(err => reject(err));
         }),
+    getQuestionsWithTranslate: (initialLang, lang) =>
+        new Promise((resolve, reject) => {
+            QuestionTable.findAll({
+                include: [{
+                    model: TypeTable,
+                    as: "type",
+                    required: true,
+                    attributes: ['name'],
+                }, {
+                    model: QuestionTable,
+                    as: "translate",
+                    required: false,
+                    where: {
+                        lang: {
+                            [Op.eq]: lang
+                        }
+                    }
+                }],
+                where: {
+                    lang: {
+                        [Op.eq]: initialLang
+                    }
+                },
+                order: [['type_id', 'ASC']]
+            })
+                .then(result => resolve(result))
+                .catch(err => reject(err));
+        }),
     insert: question =>
         new Promise((resolve, reject) => {
             QuestionTable.create({
@@ -117,9 +157,21 @@ const questionDao = {
                 .then(() => resolve(201))
                 .catch(err => reject(err));
         }),
+    insertTranslateRule: question =>
+        new Promise((resolve, reject) => {
+            QuestionTable.create({
+                type_id: question.type_id,
+                rule: question.rule,
+                sip: question.sip,
+                answers: question.answers,
+                lang: question.lang,
+                translation_id: question.translation_id,
+            })
+                .then(() => resolve(201))
+                .catch(err => reject(err));
+        }),
     update: (id, newQuestion) =>
         new Promise((resolve, reject) => {
-            console.log(id, newQuestion)
             QuestionTable.findByPk(id)
                 .then(question =>
                     question
@@ -141,7 +193,7 @@ const questionDao = {
 
                 )
                 .catch(err => reject(err));
-        })
+        }),
 };
 
 module.exports = questionDao;

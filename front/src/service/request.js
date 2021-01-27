@@ -18,19 +18,19 @@ const setRequestOptions = (method, body) => {
     };
 }
 
-const handleResponse = (response, resolve, reject) => {
+const handleResponse = (response, resolve, reject, toJson = false) => {
     if (response.status >= 300) {
         if (response.status === 401) {
         }
         reject(response)
     }
-    resolve(response.json())
+    toJson ? resolve(response.json()) : resolve(response)
 }
 export const requestApi = {
     get: url =>
         new Promise((resolve, reject) => {
             fetch(serverUrl(url), setRequestOptions())
-                .then(res => handleResponse(res, resolve, reject))
+                .then(res => handleResponse(res, resolve, reject, true))
                 .catch(err => handleResponse(err, resolve, reject))
         }),
     post: (url, body) =>

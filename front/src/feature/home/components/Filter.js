@@ -8,7 +8,7 @@ import MenuItem         from "@material-ui/core/MenuItem";
 import Select           from "@material-ui/core/Select";
 import { Button }       from "@material-ui/core";
 
-export const Filer = ({onSelectedType, onLangChange}) => {
+export const Filter = ({onSelectedType, onLangChange, updateTranslateMode}) => {
     const types = [
         {label: 'Tout', id: 'all', checked: true},
         {label: 'Everyone', id: 'everyone'},
@@ -44,6 +44,7 @@ export const Filer = ({onSelectedType, onLangChange}) => {
                     <MenuItem value={"en"}>En</MenuItem>
                 </Select>
             </FormControl>
+            <Button onClick={updateTranslateMode}>Mode traduction</Button>
         </Form>
     );
 }

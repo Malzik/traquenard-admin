@@ -8,7 +8,6 @@ import { store }                    from '../../service/store/store';
 import { authenticate, updateAuth } from '../../service/auth/actions';
 import { Redirect }                 from "react-router-dom";
 import { Alert }                    from "react-bootstrap";
-import { toast }                    from "react-toastify";
 import withAuthProps                from "../withAuthProps";
 
 const Login = ({ setLoggedIn }) => {

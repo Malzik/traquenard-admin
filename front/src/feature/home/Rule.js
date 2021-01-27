@@ -1,28 +1,18 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Button }                  from "react-bootstrap";
 import { toast }                   from "react-toastify";
 import { questionApi }             from "../../service/question";
 import { Icon }                    from "../../components/Icon";
-import autosize                    from "autosize";
-import { text }                    from "@fortawesome/fontawesome-svg-core";
+import { Answers }                 from "./components/Answers";
+import { Question }                from "./components/Question";
+import { Sip }                     from "./components/Sip";
 
 export const Rule = ({rule, showAnswers}) => {
-    const style = {
-        maxHeight: "75px",
-        minHeight: "38px",
-        resize: "none",
-        padding: "9px",
-        boxSizing: "border-box",
-        fontSize: "15px"
-    };
     const [saveRule] = useState(rule)
     const [question, setQuestion] = useState(rule.rule)
     const [answers, setAnswers] = useState(rule.answers)
     const [sip, setSip] = useState(rule.sip)
 
-    const [editingRule, setEditingRule] = useState(false)
-    const [editingAnswers, setEditingAnswers] = useState(false)
-    const [editingSip, setEditingSip] = useState(false)
     const [visible, setVisible] = useState(true)
 
     const updateRule = () => {
@@ -49,103 +39,13 @@ export const Rule = ({rule, showAnswers}) => {
         }
     }
 
-    const onFocusRule = () => {
-        setEditingRule(true)
-    }
-    const onBlurRule = () => {
-        setEditingRule(false)
-    }
-    const onFocusSip = () => {
-        setEditingSip(true)
-    }
-    const onBlurSip = () => {
-        setEditingSip(false)
-    }
-    function onFocusAnswers() {
-        setEditingAnswers(true)
-    }
-    const onBlurAnswers = () => {
-        setEditingAnswers(false)
-    }
-
-    const renderRule = () => {
-        if(editingRule) {
-            return (
-                <td>
-                    {<textarea
-                        style={style}
-                        autoFocus
-                        className="form-control"
-                        value={question}
-                        onChange={e => setQuestion(e.target.value)}
-                        onBlur={() => onBlurRule()}
-                    />}
-                </td>
-            )
-        }
-        return(<td onClick={() => onFocusRule()}>{question}</td>)
-    }
-    const renderSip = () => {
-        if(editingSip) {
-            return (
-                <td width="100">
-                    <input
-                        autoFocus
-                        className="form-control"
-                        value={sip}
-                        onChange={e => setSip(e.target.value)}
-                        onBlur={() => onBlurSip()} />
-                </td>
-            )
-        }
-        return(<td width="100" onClick={() => onFocusSip()}>{sip}</td>)
-    }
-    const renderAnswers = () => {
-        if(answers !== null) {
-            if(editingAnswers) {
-                return (
-                    <td width={500}>
-                        <textarea
-                            style={{
-                                maxHeight: "75px",
-                                minHeight: "200px",
-                                resize: "none",
-                                padding: "9px",
-                                boxSizing: "border-box",
-                                fontSize: "15px"}}
-                            autoFocus
-                            className="form-control"
-                            value={JSON.stringify(answers)}
-                            onChange={e => setAnswers(e.target.value)}
-                            onBlur={() => onBlurAnswers()} />
-                    </td>
-                )
-            }
-            return(
-                <td onClick={() => onFocusAnswers()}>
-                    <ul className="list-group">
-                        {answers.map((answer, index) => {
-                            return (<li
-                                key={index}
-                                className={`list-group-item ${answer.true_false ? "list-group-item-success" : "list-group-item-danger"}`}>
-                                {answer.content}
-                            </li>)
-                        })}
-                    </ul>
-                </td>
-            )
-        } else {
-            return (<td />)
-        }
-    }
-
     return visible ? (
         <tr>
             <th scope="row">{rule.id}</th>
             <td>{rule.type.name}</td>
-            {renderRule()}
-            {showAnswers && renderAnswers()}
-            {renderSip()}
+            <Question question={question} setQuestion={setQuestion} />
+            {showAnswers && <Answers answers={answers} setAnswers={setAnswers} />}
+            <Sip sip={sip} setSip={setSip} />
             <td>
                 <div className="btn-group" role="group">
                     <div>

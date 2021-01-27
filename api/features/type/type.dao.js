@@ -64,4 +64,3 @@ const typeDao = {
 };
 
 module.exports = typeDao;
-//Sequelize.query("SELECT t.id as id, t.name as name, t2.name as parent_name FROM type t LEFT JOIN type t2 on t.subtype_id = t2.id WHERE t.subtype_id is NOT NULL")

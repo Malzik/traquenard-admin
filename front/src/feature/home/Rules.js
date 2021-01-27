@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Filer }                      from "./Filter";
+import { Filter }                     from "./components/Filter";
 import { Table }                      from "react-bootstrap";
 import { Rule }                       from "./Rule";
 import { questionApi }                from "../../service/question";
 import { store }                      from "../../service/store/store";
-import { setRules as setStoreRules }                    from "./store/actions";
+import { setRules as setStoreRules }  from "./store/actions";
+import { TranslateRule }              from "./TranslateRule";
 
 export const Rules = () => {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -13,6 +14,8 @@ export const Rules = () => {
     const [error, setError] = useState(null);
     const [selectedType, setSelectedType] = useState("all");
     const [lang, setLang] = useState("fr");
+    const [translateMode, setTranslateMode] = useState(false);
+    const [translationLang, setTranslationLang] = useState("en");
 
     useEffect(() => {
         const storeRules = store.getState().rules.rules;
@@ -21,7 +24,7 @@ export const Rules = () => {
             setSelectedRules(storeRules);
             setIsLoaded(true);
         } else {
-            questionApi.getQuestionsByLang(lang)
+            questionApi.getQuestionsWithTranslate("fr", "en")
                 .then(
                     (result) => {
                         store.dispatch(setStoreRules(result))
@@ -48,11 +51,11 @@ export const Rules = () => {
     }
 
     const onLangChange = (newLang) => {
-        setLang(newLang.target.value)
-        questionApi.getQuestionsByLang(newLang.target.value)
+        questionApi.getQuestionsWithTranslate(newLang.target.value, lang)
             .then(
                 (result) => {
                     store.dispatch(setStoreRules(result))
+                    setTranslateMode(false)
                     setRules(result);
                     setSelectedRules(result);
                     setIsLoaded(true);
@@ -62,6 +65,11 @@ export const Rules = () => {
                     setIsLoaded(true);
                 }
             )
+        setLang(newLang.target.value)
+    }
+
+    const updateTranslateMode = () => {
+        setTranslateMode(!translateMode)
     }
 
     const showAnswers = () =>  selectedType === 'all' || selectedType === 'questions';
@@ -71,7 +79,7 @@ export const Rules = () => {
     } else {
         return (
             <div>
-                <Filer onSelectedType={onChange} onLangChange={onLangChange}/>
+                <Filter onSelectedType={onChange} onLangChange={onLangChange} updateTranslateMode={updateTranslateMode}/>
                 <Table striped bordered hover variant="dark">
                     <thead>
                     <tr>
@@ -86,12 +94,20 @@ export const Rules = () => {
                     <tbody>
                     {
                         (!isLoaded) ? <tr><td colSpan={6} className={"text-center"}><h1>Chargement...</h1></td></tr> :
-                        selectedRules.map(rule => {
-                            return <Rule
-                                rule={rule}
-                                key={rule.id}
-                                showAnswers={showAnswers()}/>
-                        })
+                            selectedRules.map(rule => (
+                                <React.Fragment key={"rf" + rule.id}>
+                                    <Rule
+                                        rule={rule}
+                                        key={rule.id}
+                                        showAnswers={showAnswers()}/>
+                                    {translateMode ? <TranslateRule
+                                        rule={rule}
+                                        lang={translationLang}
+                                        key={"translation" + rule.id}
+                                        showAnswers={showAnswers()} /> :null
+                                    }
+                                </React.Fragment>
+                            ))
                     }
                     </tbody>
                 </Table>

@@ -14,11 +14,18 @@ export const questionApi = {
                 .get("question/lang/" + lang)
                 .then(res =>resolve(res))
                 .catch(err => reject(err))
-    }),
+        }),
     getQuestionsByType: id =>
         new Promise((resolve, reject) => {
             requestApi
                 .get("question/type" + id)
+                .then(res =>resolve(res))
+                .catch(err => reject(err))
+        }),
+    getQuestionsWithTranslate: (initialLang, lang) =>
+        new Promise((resolve, reject) => {
+            requestApi
+                .get("question/translate/" + initialLang + "/" + lang)
                 .then(res =>resolve(res))
                 .catch(err => reject(err))
         }),
@@ -42,6 +49,25 @@ export const questionApi = {
                     answers: JSON.stringify(rule.answers),
                     sip: sip,
                     lang: lang
+                })
+                .then(res =>{
+                    if(res.status >= 300) {
+                        reject(res.statusText)
+                    }
+                    resolve(res)
+                })
+                .catch(err => reject(err))
+        }),
+    addTranslateRule: (translateRule)  =>
+        new Promise((resolve, reject) => {
+            requestApi
+                .post("question/translate", {
+                    type_id: translateRule.type_id,
+                    rule: translateRule.rule,
+                    answers: null,
+                    sip: translateRule.sip,
+                    lang: translateRule.lang,
+                    translation_id: translateRule.translation_id
                 })
                 .then(res =>{
                     if(res.status >= 300) {

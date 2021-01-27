@@ -33,9 +33,25 @@ router.get('/type/:typeId', [authJwt.verifyToken], (req, res) => {
         .catch(err => replyServerError(err, res));
 });
 
+router.get('/translate/:initialLang/:lang', [authJwt.verifyToken], (req, res) => {
+    dao
+        .getQuestionsWithTranslate(req.params.initialLang, req.params.lang)
+        .then(response => res.status(200).send(response))
+        .catch(err => replyServerError(err, res));
+});
+
 router.post('/', [authJwt.verifyToken], (req, res) => {
     dao
         .insert(req.body)
+        .then(response => {
+            res.status(201).send(response);
+        })
+        .catch(err => replyServerError(err, res));
+});
+
+router.post('/translate', [authJwt.verifyToken], (req, res) => {
+    dao
+        .insertTranslateRule(req.body)
         .then(response => {
             res.status(201).send(response);
         })
