@@ -141,6 +141,7 @@ const questionDao = {
                         [Op.eq]: initialLang
                     }
                 },
+                group: ['id', 'type_id'],
                 order: [['type_id', 'ASC']]
             })
                 .then(result => resolve(result))
