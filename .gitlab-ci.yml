@@ -1,3 +1,4 @@
+image: docker:stable-git
 variables:
   ROBOT_USER: $REGISTRY_USER
 stages:
@@ -5,9 +6,6 @@ stages:
   - deploy-server
 
 build-front:
-  image: docker:stable
-  services:
-    - docker:dind
   variables:
     ROBOT_USER: $REGISTRY_USER
   stage: docker
@@ -22,9 +20,6 @@ build-front:
     - master
 
 build-api:
-  image: docker:stable
-  services:
-    - docker:dind
   variables:
     ROBOT_USER: $REGISTRY_USER
   stage: docker
@@ -39,9 +34,6 @@ build-api:
     - master
 
 build-db:
-  image: docker:stable
-  services:
-    - docker:dind
   variables:
     ROBOT_USER: $REGISTRY_USER
   stage: docker
