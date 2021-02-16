@@ -13,7 +13,7 @@ build-front:
     - echo "registry user is :" $ROBOT_USER
   script:
     # registry user/password : variables définies dans gitlab
-    - echo "$REGISTRY_PASSWORD" | docker login reg.amoyel.fr -u $ROBOT_USER --password-stdin
+    - echo '$REGISTRY_PASSWORD' | docker login reg.amoyel.fr -u "$ROBOT_USER" --password-stdin
     - docker build -t reg.amoyel.fr/aheroin/traquenard-front ./front
     - docker push reg.amoyel.fr/aheroin/traquenard-front
   only:
@@ -27,7 +27,7 @@ build-api:
     - echo "registry user is :" $ROBOT_USER
   script:
     # registry user/password : variables définies dans gitlab
-    - echo "$REGISTRY_PASSWORD" | docker login reg.amoyel.fr -u $ROBOT_USER --password-stdin
+    - echo '$REGISTRY_PASSWORD' | docker login reg.amoyel.fr -u "$ROBOT_USER" --password-stdin
     - docker build -t reg.amoyel.fr/aheroin/traquenard-api ./api
     - docker push reg.amoyel.fr/aheroin/traquenard-api
   only:
@@ -41,7 +41,7 @@ build-db:
     - echo "registry user is :" $ROBOT_USER
   script:
     # registry user/password : variables définies dans gitlab
-    - echo "$REGISTRY_PASSWORD" | docker login reg.amoyel.fr -u $ROBOT_USER --password-stdin
+    - echo '$REGISTRY_PASSWORD' | docker login reg.amoyel.fr -u "$ROBOT_USER" --password-stdin
     - docker build -t reg.amoyel.fr/aheroin/traquenard-db ./database
     - docker push reg.amoyel.fr/aheroin/traquenard-db
   only:
