@@ -108,11 +108,12 @@ const questionDao = {
                 .then(result => resolve(result))
                 .catch(err => reject(err));
         }),
-    getByType: typeId =>
+    getByType: (typeId, lang) =>
         new Promise((resolve, reject) => {
             QuestionTable.findAll({
                 where: {
-                    type_id: typeId
+                    type_id: typeId,
+                    lang: lang
                 }
             })
                 .then(result => resolve(result))
@@ -194,6 +195,16 @@ const questionDao = {
                         .catch(err => reject(err))
 
                 )
+                .catch(err => reject(err));
+        }),
+    getLang: () =>
+        new Promise((resolve, reject) => {
+            QuestionTable.findAll({
+                attributes: [
+                    [Sequelize.fn('DISTINCT', Sequelize.col('lang')), 'lang'],
+                ]
+            })
+                .then(result => resolve(result))
                 .catch(err => reject(err));
         }),
 };

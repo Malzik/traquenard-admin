@@ -15,10 +15,10 @@ export const questionApi = {
                 .then(res =>resolve(res))
                 .catch(err => reject(err))
         }),
-    getQuestionsByType: id =>
+    getQuestionsByType: (id, lang) =>
         new Promise((resolve, reject) => {
             requestApi
-                .get("question/type" + id)
+                .get("question/type/" + id + "/" + lang)
                 .then(res =>resolve(res))
                 .catch(err => reject(err))
         }),
@@ -81,6 +81,13 @@ export const questionApi = {
         new Promise((resolve, reject) => {
             requestApi
                 .delete("question/" + id)
+                .then(res =>resolve(res))
+                .catch(err => reject(err))
+        }),
+    getDistinctLanguages: () =>
+        new Promise((resolve, reject) => {
+            requestApi
+                .get("question/lang")
                 .then(res =>resolve(res))
                 .catch(err => reject(err))
         }),

@@ -15,7 +15,7 @@ export const Rules = () => {
     const [selectedType, setSelectedType] = useState("all");
     const [lang, setLang] = useState("fr");
     const [translateMode, setTranslateMode] = useState(false);
-    const [translationLang, setTranslationLang] = useState("en");
+    const [translationLang] = useState("en");
 
     useEffect(() => {
         const storeRules = store.getState().rules.rules;
@@ -57,8 +57,12 @@ export const Rules = () => {
                     store.dispatch(setStoreRules(result))
                     setTranslateMode(false)
                     setRules(result);
-                    const filteredRules = result.filter(rule => rule.type.name === selectedType)
-                    setSelectedRules(filteredRules)
+                    if(selectedType === "all") {
+                        setSelectedRules(result);
+                    } else {
+                        const filteredRules = result.filter(rule => rule.type.name === selectedType)
+                        setSelectedRules(filteredRules)
+                    }
                     setIsLoaded(true);
                 },
                 (error) => {

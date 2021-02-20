@@ -7,14 +7,21 @@ import { setAllDataWithoutSubtype, setAllDataWithSubtype } from "../service/expo
 import { store }                                           from "../service/store/store";
 import { toast }                                           from "react-toastify";
 import { AuthContext }                                     from "../feature/login/AuthContext";
+import { questionApi }                                     from "../service/question";
 
 export const Header = () => {
     const exportRules = () => {
         if(store.getState().auth.authenticated) {
             let zip = new JSZip();
 
-            setAllDataWithoutSubtype(zip)
-                .then(() => setAllDataWithSubtype(zip))
+            questionApi.getDistinctLanguages()
+                .then(languages => {
+                    languages.forEach(lang => {
+                        zip.folder(lang.lang)
+                        setAllDataWithoutSubtype(zip, lang.lang)
+                            .then(() => setAllDataWithSubtype(zip, lang.lang))
+                    })
+                })
                 .then(() => {
                     setTimeout(() => {
                         zip.generateAsync({type: "blob"}).then(function (content) {

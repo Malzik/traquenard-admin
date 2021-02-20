@@ -29,6 +29,9 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get('/', function (req, res) {
+    res.send('Traquenard Admin api');
+});
 app.use('/api/auth', authRouter);
 app.use('/api/question', questionRouter);
 app.use('/api/type', typeRouter);

@@ -12,6 +12,13 @@ router.get('/', [authJwt.verifyToken], (req, res) => {
         .catch(err => replyServerError(err, res));
 });
 
+router.get('/lang', [authJwt.verifyToken], (req, res) => {
+    dao
+        .getLang()
+        .then(response => res.status(200).send(response))
+        .catch(err => replyServerError(err, res));
+});
+
 router.get('/lang/:lang', [authJwt.verifyToken], (req, res) => {
     dao
         .getQuestionsByLang(req.params.lang)
@@ -26,9 +33,9 @@ router.get('/:id', [authJwt.verifyToken], (req, res) => {
         .catch(err => replyServerError(err, res));
 });
 
-router.get('/type/:typeId', [authJwt.verifyToken], (req, res) => {
+router.get('/type/:typeId/:lang', [authJwt.verifyToken], (req, res) => {
     dao
-        .getByType(req.params.typeId)
+        .getByType(req.params.typeId, req.params.lang)
         .then(response => res.status(200).send(response))
         .catch(err => replyServerError(err, res));
 });

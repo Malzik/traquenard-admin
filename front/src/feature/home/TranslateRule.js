@@ -88,13 +88,20 @@ export const TranslateRule = ({rule, lang, showAnswers}) => {
         }
     }
 
+    const renderAnswers = () =>
+    {
+        if(showAnswers) {
+            return (<Answers answers={translateRule.answers} setAnswers={setAnswers} />)
+        }
+        return null;
+    }
+
     return !loading ? (
         <tr style={{ backgroundColor: "#9AA9B8"}}>
             <th scope="row">{translateRule.id}</th>
             <td>{rule.type.name}</td>
             <Question question={translateRule.rule} setQuestion={setQuestion} />
-            {showAnswers &&
-            translateRule.type === "questions" ? <Answers answers={[]} setAnswers={setAnswers} /> : <td/>}
+            {renderAnswers()}
             <Sip sip={translateRule.sip} setSip={setSip} />
             <td>
                 <div className="btn-group" role="group">

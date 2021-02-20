@@ -19,37 +19,37 @@ const setData = (questions) => {
     })
     return data;
 }
-export const setAllDataWithoutSubtype = zip => {
+export const setAllDataWithoutSubtype = (zip, lang) => {
     return typeApi
         .getTypeWithNoSubType()
         .then(types => {
             types.forEach(type => {
                 questionApi
-                    .getQuestionsByType(type.id)
+                    .getQuestionsByType(type.id, lang)
                     .then(questions => {
                         const data = setData(questions)
                         const finalData = {[type.name]: data}
-                        zip.file(type.name + ".json", JSON.stringify(finalData))
+                        zip.file(lang + "/" + type.name + ".json", JSON.stringify(finalData))
                     })
             })
         })
         .then(() => zip)
 }
-export const setAllDataWithSubtype = zip => {
+export const setAllDataWithSubtype = (zip, lang) => {
     return typeApi
         .getTypeWithSubType()
         .then(types => {
             let finalData = {}
             Promise.all(types.map(async type => {
                 await questionApi
-                    .getQuestionsByType(type.id)
+                    .getQuestionsByType(type.id, lang)
                     .then(questions => {
                         const data = setData(questions)
                         finalData = {[type.name]: data, ...finalData}
                     })
             })).then(() => {
                 finalData = {[types[0].type2.parent_name]: finalData}
-                zip.file(types[0].type2.parent_name + ".json", JSON.stringify(finalData))
+                zip.file(lang + "/" + types[0].type2.parent_name + ".json", JSON.stringify(finalData))
             })
         })
         .then(() => zip)

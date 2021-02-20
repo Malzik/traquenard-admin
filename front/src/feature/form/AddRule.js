@@ -8,11 +8,11 @@ import Checkbox                                         from "@material-ui/core/
 import Button from '@material-ui/core/Button';
 
 export const AddRule = () => {
-    const [sip, setSip] = useState(null);
+    const [sip, setSip] = useState("");
     const [type, setType] = useState(null);
-    const [lang, setLang] = useState('fr');
-    const [rule, setRule] = useState(null);
-    const [answers, setAnswers] = useState(null);
+    const [lang, setLang] = useState("");
+    const [rule, setRule] = useState("");
+    const [answers, setAnswers] = useState([]);
     const [, forceUpdate] = React.useState(0);
 
     const [answerInput, setAnswerInput] = useState("");
@@ -29,6 +29,11 @@ export const AddRule = () => {
 
     const verifyField = field => field !== null && field.trim().length > 0
 
+    function cleanRule() {
+        setRule("")
+        setAnswers([])
+    }
+
     const handleSubmit = () => {
         if (!verifyField(rule)) {
             toast.error('La règle ne peut pas être vide')
@@ -44,7 +49,10 @@ export const AddRule = () => {
         }
         questionApi
             .addRule(type, rule, answers, sip, lang)
-            .then(() => toast.success("Règle créé"))
+            .then(() => {
+                cleanRule()
+                toast.success("Règle créé")
+            })
             .catch(err => toast.error(err))
     }
 
@@ -100,6 +108,7 @@ export const AddRule = () => {
                             className="form-control"
                             id="sip"
                             required
+                            value={sip}
                             placeholder="Gorgées"
                             onChange={event => setSip(event.target.value)}
                         />
@@ -112,8 +121,8 @@ export const AddRule = () => {
                             name="lang"
                             className="form-control"
                             id="langue"
-                            value="fr"
                             required
+                            value={lang}
                             placeholder={"Langue"}
                             onChange={event => setLang(event.target.value)}
                         />
@@ -126,6 +135,7 @@ export const AddRule = () => {
                     name="rule"
                     className="form-control"
                     id="enonce"
+                    value={rule}
                     placeholder={"Enoncé"}
                     style={{resize: "none"}}
                     onChange={event => setRule(event.target.value)}/>

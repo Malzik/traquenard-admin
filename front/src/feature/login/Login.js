@@ -49,6 +49,7 @@ const Login = ({ setLoggedIn }) => {
                 setVisible(true)
             })
     }
+
     const login = () => {
         return (
             <div className="Login">
