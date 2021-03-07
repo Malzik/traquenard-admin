@@ -37,7 +37,7 @@ services:
     container_name: traquenard-db
     volumes:
       - "./volumes/db:/var/lib/mysql"
-      - "./database/db.sql:/docker-entrypoint-initdb.d/2.sql"
+      - "./database/:/docker-entrypoint-initdb.d/"
     environment:
       MYSQL_DATABASE: traquenard
       MYSQL_USER: traquenard
