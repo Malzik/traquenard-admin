@@ -1,37 +1,23 @@
-import * as ingredient from "./tables/ingredient";
-import * as recipeIngredient from "./tables/recipe_ingredient";
-import * as recipe from "./tables/recipe";
-import * as mealRecipe from "./tables/meal_recipe";
-import * as meal from "./tables/meal";
-
-const Sequelize = require('sequelize');
-const { Op } = require("sequelize");
-
 const db = require('../../services/db/db');
 
-const IngredientTable = ingredient.getTable()
-const RecipeIngredientTable = recipeIngredient.getTable()
-const RecipeTable = recipe.getTable()
-const MealRecipeTable = mealRecipe.getTable()
-const MealTable = meal.getTable()
+const IngredientTable = require("./tables/ingredient")(db);
+const RecipeIngredientTable = require("./tables/recipe_ingredient")(db);
+const RecipeTable = require("./tables/recipe")(db);
+const MealRecipeTable = require("./tables/meal_recipe")(db);
+const MealTable = require("./tables/meal")(db);
 
-RecipeIngredientTable.belongsTo(RecipeTable, {
-    foreignKey: 'recipe_id',
-    as: "recipe"
-})
-RecipeIngredientTable.belongsTo(IngredientTable, {
-    foreignKey: 'ingredient_id',
-    as: "ingredient"
-})
+MealTable.belongsToMany(RecipeTable, {
+    through: MealRecipeTable,
+    as: "recipes",
+    foreignKey: "recipe_id",
+});
 
-MealRecipeTable.belongsTo(MealTable, {
-    foreignKey: 'meal_id',
-    as: "meal"
-})
-MealRecipeTable.belongsTo(RecipeTable, {
-    foreignKey: 'recipe_id',
-    as: "recipe"
-})
+RecipeTable.belongsToMany(IngredientTable, {
+    through: RecipeIngredientTable,
+    as: "ingredients",
+    foreignKey: "ingredient_id",
+});
+
 
 const mealDao = {
     get: () =>
@@ -39,8 +25,8 @@ const mealDao = {
             MealTable.findAll({
                 include: [{
                     model: RecipeTable,
-                    as: "recipe",
-                    attributes: ['name'],
+                    as: "recipes",
+                    required: true
                 }]
             })
                 .then(results => resolve(results))
@@ -48,6 +34,7 @@ const mealDao = {
         }),
     insert: meal =>
         new Promise((resolve, reject) => {
+            console.log(meal)
             MealTable.create({
                 title: meal.title,
                 date: meal.date

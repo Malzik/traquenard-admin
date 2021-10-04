@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize');
 
-export const getTable = db => db
+const getTable = db => db
     .getConnection()
-    .connection.define('recipe', {
+    .connection.define('meal', {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
@@ -14,4 +14,6 @@ export const getTable = db => db
         date: {
             type: Sequelize.DATE,
         }
-    }, {tableName: "recipe"});
+    }, {tableName: "meal"});
+
+module.exports = getTable;

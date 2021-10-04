@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-export const getTable = db => db
+const getTable = db => db
     .getConnection()
     .connection.define('meal_recipe', {
         meal_id: {
@@ -20,3 +20,5 @@ export const getTable = db => db
             }
         },
     }, {tableName: "meal_recipe"});
+
+module.exports = getTable;

@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-export const getTable = db => db
+const getTable = db => db
     .getConnection()
     .connection.define('recipe_ingredient', {
         recipe_id: {
@@ -26,3 +26,5 @@ export const getTable = db => db
             type: Sequelize.STRING,
         }
     }, {tableName: "recipe_ingredient"});
+
+module.exports = getTable;

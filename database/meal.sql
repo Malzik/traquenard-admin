@@ -21,7 +21,8 @@ CREATE TABLE `recipe` (
 DROP TABLE IF EXISTS `meal`;
 CREATE TABLE `meal` (
                                `id` int(11) NOT NULL AUTO_INCREMENT,
-                               `name` int(11) NOT NULL,
+                               `title` varchar(255) NOT NULL,
+                               `date` date NOT NULL,
                                PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
