@@ -9,6 +9,7 @@ const app = express();
 const authRouter = require('./features/auth/auth.controller');
 const questionRouter = require('./features/question/question.controller');
 const typeRouter = require('./features/type/type.controller');
+const mealRouter = require('./features/meal/meal.controller');
 const defaultController = require("./features/default.controller");
 const db = require("./services/db/db");
 
@@ -35,6 +36,7 @@ app.get('/', function (req, res) {
 app.use('/api/auth', authRouter);
 app.use('/api/question', questionRouter);
 app.use('/api/type', typeRouter);
+app.use('/api/meal', mealRouter);
 
 app.use(defaultController);
 
