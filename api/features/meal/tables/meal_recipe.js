@@ -19,6 +19,6 @@ const getTable = db => db
                 key: 'id'
             }
         },
-    }, {tableName: "meal_recipe"});
+    }, {tableName: "meal_recipe", underscored: true});
 
 module.exports = getTable;

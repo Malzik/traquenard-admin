@@ -10,7 +10,8 @@ const getTable = db => db
         },
         name: {
             type: Sequelize.STRING,
+            allowNull: false
         }
-    }, {tableName: "recipe"});
+    }, {tableName: "recipe", underscored: true});
 
 module.exports = getTable;

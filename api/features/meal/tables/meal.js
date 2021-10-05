@@ -10,10 +10,12 @@ const getTable = db => db
         },
         title: {
             type: Sequelize.STRING,
+            allowNull: false
         },
         date: {
             type: Sequelize.DATE,
+            allowNull: false
         }
-    }, {tableName: "meal"});
+    }, {tableName: "meal", underscored: true});
 
 module.exports = getTable;

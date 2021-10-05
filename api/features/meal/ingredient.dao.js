@@ -3,14 +3,6 @@ const db = require('../../services/db/db');
 const IngredientTable = require("./tables/ingredient")(db);
 const RecipeIngredientTable = require("./tables/recipe_ingredient")(db);
 const RecipeTable = require("./tables/recipe")(db);
-const MealRecipeTable = require("./tables/meal_recipe")(db);
-const MealTable = require("./tables/meal")(db);
-
-MealTable.belongsToMany(RecipeTable, {
-    through: MealRecipeTable,
-    as: "recipes",
-    foreignKey: "recipe_id",
-});
 
 // RecipeTable.belongsToMany(IngredientTable, {
 //     through: RecipeIngredientTable,
@@ -19,36 +11,28 @@ MealTable.belongsToMany(RecipeTable, {
 // });
 
 
-const mealDao = {
+const ingredientDao = {
     get: () =>
         new Promise((resolve, reject) => {
-            MealTable.findAll({
-                include: [{
-                    model: RecipeTable,
-                    as: "recipes",
-                    required: true
-                }]
-            })
+            IngredientTable.findAll()
                 .then(results => resolve(results))
                 .catch(err => reject(err));
         }),
-    insert: meal =>
+    insert: ingredient =>
         new Promise((resolve, reject) => {
-            console.log(meal)
-            MealTable.create({
-                title: meal.title,
-                date: meal.date
+            IngredientTable.create({
+                name: ingredient.name,
             })
                 .then(() =>
                     resolve(201))
                 .catch(err => reject(err));
         }),
-    update: (id, newRecipes) =>
+    update: (id, newIngredient) =>
         new Promise((resolve, reject) => {
-            MealTable.findByPk(id)
-                .then(meal =>
-                    meal
-                        .update(newRecipes)
+            IngredientTable.findByPk(id)
+                .then(ingredient =>
+                    ingredient
+                        .update(newIngredient)
                         .then(() => resolve(200))
                         .catch(err => reject(err))
 
@@ -57,9 +41,9 @@ const mealDao = {
         }),
     delete: id =>
         new Promise((resolve, reject) => {
-            MealTable.findByPk(id)
-                .then(meal =>
-                    meal
+            IngredientTable.findByPk(id)
+                .then(ingredient =>
+                    ingredient
                         .destroy()
                         .then(() => resolve(204))
                         .catch(err => reject(err))
@@ -69,4 +53,4 @@ const mealDao = {
         })
 };
 
-module.exports = mealDao;
+module.exports = ingredientDao;

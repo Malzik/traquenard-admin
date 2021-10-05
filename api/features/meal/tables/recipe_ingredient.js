@@ -21,10 +21,11 @@ const getTable = db => db
         },
         quantity: {
             type: Sequelize.INTEGER,
+            allowNull: false
         },
         unit: {
-            type: Sequelize.STRING,
+            type: Sequelize.STRING
         }
-    }, {tableName: "recipe_ingredient"});
+    }, {tableName: "recipe_ingredient", underscored: true});
 
 module.exports = getTable;
