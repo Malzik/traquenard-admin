@@ -93,8 +93,8 @@ router.post('/ingredient', [], (req, res) => {
 router.put('/ingredient/:id', [], (req, res) => {
     daoIngredient
         .update(req.params.id, req.body)
-        .then(() => {
-            res.sendStatus(200);
+        .then(response => {
+            res.status(200).send(response);
         })
         .catch(err => replyServerError(err, res));
 });

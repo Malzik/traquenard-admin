@@ -6,18 +6,8 @@ const RecipeTable = require("./tables/recipe")(db);
 const MealRecipeTable = require("./tables/meal_recipe")(db);
 const MealTable = require("./tables/meal")(db);
 
-MealTable.belongsToMany(RecipeTable, {
-    through: MealRecipeTable,
-    as: "recipes",
-    foreignKey: "recipe_id",
-});
-
-// RecipeTable.belongsToMany(IngredientTable, {
-//     through: RecipeIngredientTable,
-//     as: "ingredients",
-//     foreignKey: "ingredient_id",
-// });
-
+MealTable.belongsToMany(RecipeTable, {through: MealRecipeTable});
+RecipeTable.belongsToMany(IngredientTable, {through: RecipeIngredientTable});
 
 const mealDao = {
     get: () =>
@@ -35,12 +25,25 @@ const mealDao = {
     insert: meal =>
         new Promise((resolve, reject) => {
             console.log(meal)
-            MealTable.create({
-                title: meal.title,
-                date: meal.date
+            MealTable.findOrCreate({
+                where: {
+                    title: meal.title,
+                    date: meal.date
+                }
             })
-                .then(() =>
-                    resolve(201))
+                .then(newMeal => {
+                    newMeal = newMeal[0]
+                    meal.recipes.forEach(recipe => {
+                        RecipeTable.findOrCreate({
+                            where: {
+                                name: recipe.name
+                            }
+                        }).then(dbRecipe => {
+                            newMeal.setRecipes([dbRecipe[0]])
+                        })
+                    })
+                    resolve(201)
+                })
                 .catch(err => reject(err));
         }),
     update: (id, newRecipes) =>

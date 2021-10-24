@@ -1,40 +1,51 @@
 const db = require('../../services/db/db');
+const logger = require("../../services/logger/logger");
 
 const IngredientTable = require("./tables/ingredient")(db);
 const RecipeIngredientTable = require("./tables/recipe_ingredient")(db);
 const RecipeTable = require("./tables/recipe")(db);
 
 RecipeTable.belongsToMany(IngredientTable, {through: RecipeIngredientTable});
+IngredientTable.belongsToMany(RecipeTable, {through: RecipeIngredientTable});
 
 const recipeDao = {
     get: () =>
         new Promise((resolve, reject) => {
             RecipeTable.findAll({
-                include: IngredientTable
+                attributes: ['id', 'name'],
+                include: {
+                    model: IngredientTable,
+                    through: { attributes: ['quantity', 'unit'] }
+                }
             })
                 .then(results => resolve(results))
                 .catch(err => reject(err));
         }),
     insert: recipe =>
         new Promise((resolve, reject) => {
-            RecipeTable.create({
-                name: recipe.name,
+            RecipeTable.findOrCreate({
+                where: {
+                    name: recipe.name
+                }
             })
                 .then(newRecipe => {
-                    recipe.ingredients.forEach(async ingredient => {
-                        const [dbIngredient, ] = await IngredientTable
-                            .findOrCreate({
-                                where: {
-                                    name: ingredient.name
+                    newRecipe = newRecipe[0]
+                    recipe.ingredients.forEach(ingredient => {
+                        IngredientTable.findOrCreate({
+                            where: {
+                                name: ingredient.name
+                            }
+                        }).then(dbIngredient => {
+                            newRecipe.removeIngredients(dbIngredient[0])
+                            newRecipe.setIngredients([dbIngredient[0]], {
+                                through: {
+                                    quantity: ingredient.quantity,
+                                    unit: ingredient.unit === "" ? null : ingredient.unit
                                 }
                             })
-                        RecipeIngredientTable.create({
-                            ingredient_id: dbIngredient.id,
-                            recipe_id: newRecipe.id,
-                            quantity: ingredient.quantity,
-                            unit: ingredient.unit
                         })
-                    }, resolve(201))
+                    })
+                    resolve({...recipe, id: newRecipe.id})
                 })
                 .catch(err => reject(err));
         }),

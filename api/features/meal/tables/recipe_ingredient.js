@@ -21,7 +21,6 @@ const getTable = db => db
         },
         quantity: {
             type: Sequelize.INTEGER,
-            allowNull: false
         },
         unit: {
             type: Sequelize.STRING

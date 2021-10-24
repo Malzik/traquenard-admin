@@ -40,7 +40,7 @@ app.use('/api/meal', mealRouter);
 
 app.use(defaultController);
 
-db.getConnection().connection.sync()
+// db.getConnection().connection.sync()
 
 app.server = app.listen(process.env.PORT || 5000, () => {
     logger.success(`Listening on port ${app.server.address().port}`);

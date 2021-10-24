@@ -1,8 +1,8 @@
 module.exports = {
-    HOST: "localhost",
-    USER: "root",
-    PASSWORD: "",
+    HOST: "traquenard-db",
+    USER: "traquenard",
+    PASSWORD: "root",
     DB: "traquenard",
     PORT: 3306,
-    DIALECT: "mysql"
+    DIALECT: "mariadb"
 };

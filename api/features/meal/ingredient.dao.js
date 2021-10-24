@@ -4,12 +4,7 @@ const IngredientTable = require("./tables/ingredient")(db);
 const RecipeIngredientTable = require("./tables/recipe_ingredient")(db);
 const RecipeTable = require("./tables/recipe")(db);
 
-// RecipeTable.belongsToMany(IngredientTable, {
-//     through: RecipeIngredientTable,
-//     as: "ingredients",
-//     foreignKey: "ingredient_id",
-// });
-
+RecipeTable.belongsToMany(IngredientTable, {through: RecipeIngredientTable});
 
 const ingredientDao = {
     get: () =>
@@ -19,23 +14,21 @@ const ingredientDao = {
                 .catch(err => reject(err));
         }),
     insert: ingredient =>
-        new Promise((resolve, reject) => {
+        new Promise((resolve, reject) =>
             IngredientTable.create({
                 name: ingredient.name,
             })
-                .then(() =>
-                    resolve(201))
-                .catch(err => reject(err));
-        }),
+                .then(ingredient => resolve(ingredient))
+                .catch(err => reject(err))
+        ),
     update: (id, newIngredient) =>
         new Promise((resolve, reject) => {
             IngredientTable.findByPk(id)
                 .then(ingredient =>
                     ingredient
                         .update(newIngredient)
-                        .then(() => resolve(200))
+                        .then(newIngredient => resolve(newIngredient))
                         .catch(err => reject(err))
-
                 )
                 .catch(err => reject(err));
         }),
