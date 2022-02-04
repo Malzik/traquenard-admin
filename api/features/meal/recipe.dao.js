@@ -55,7 +55,7 @@ const recipeDao = {
                 .then(recipe =>
                     recipe
                         .update(newRecipe)
-                        .then(() => resolve(200))
+                        .then((newRecipe) => resolve(newRecipe))
                         .catch(err => reject(err))
 
                 )

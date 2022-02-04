@@ -10,7 +10,10 @@ const getTable = db => db
         },
         name: {
             type: Sequelize.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                len: [2, 50]
+            }
         }
     }, {tableName: "recipe", underscored: true});
 

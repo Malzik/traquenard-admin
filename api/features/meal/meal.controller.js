@@ -59,8 +59,8 @@ router.post('/recipe', [], (req, res) => {
 router.put('/recipe/:id', [], (req, res) => {
     daoRecipe
         .update(req.params.id, req.body)
-        .then(() => {
-            res.sendStatus(200);
+        .then(response => {
+            res.status(200).send(response);
         })
         .catch(err => replyServerError(err, res));
 });
