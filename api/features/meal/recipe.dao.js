@@ -12,7 +12,7 @@ const recipeDao = {
     get: () =>
         new Promise((resolve, reject) => {
             RecipeTable.findAll({
-                attributes: ['id', 'name'],
+                attributes: ['id', 'name', 'image'],
                 include: {
                     model: IngredientTable,
                     through: { attributes: ['quantity', 'unit'] }
@@ -25,27 +25,29 @@ const recipeDao = {
         new Promise((resolve, reject) => {
             RecipeTable.findOrCreate({
                 where: {
-                    name: recipe.name
+                    name: recipe.name,
                 }
             })
                 .then(newRecipe => {
                     newRecipe = newRecipe[0]
-                    recipe.ingredients.forEach(ingredient => {
-                        IngredientTable.findOrCreate({
-                            where: {
-                                name: ingredient.name
-                            }
-                        }).then(dbIngredient => {
-                            newRecipe.removeIngredients(dbIngredient[0])
-                            newRecipe.setIngredients([dbIngredient[0]], {
-                                through: {
-                                    quantity: ingredient.quantity,
-                                    unit: ingredient.unit === "" ? null : ingredient.unit
+                    newRecipe.update({name: recipe.name, image: recipe.image}).then(newRecipe => {
+                        recipe.ingredients.forEach(ingredient => {
+                            IngredientTable.findOrCreate({
+                                where: {
+                                    name: ingredient.name
                                 }
+                            }).then(dbIngredient => {
+                                newRecipe.removeIngredients(dbIngredient[0])
+                                newRecipe.setIngredients([dbIngredient[0]], {
+                                    through: {
+                                        quantity: ingredient.quantity,
+                                        unit: ingredient.unit === "" ? null : ingredient.unit
+                                    }
+                                })
                             })
                         })
+                        resolve({...recipe, id: newRecipe.id})
                     })
-                    resolve({...recipe, id: newRecipe.id})
                 })
                 .catch(err => reject(err));
         }),

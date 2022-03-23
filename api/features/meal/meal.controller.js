@@ -9,34 +9,9 @@ const router = express.Router();
 router.get('/', [], (req, res) => {
     daoMeal
         .get()
-        .then(meals => {
-            formatMeals(meals)
-                .then(meals => res.status(200).json({data: meals}))
-
-        })
+        .then(meals => res.status(200).json(meals))
         .catch(err => replyServerError(err, res));
 });
-
-const formatMeals = (data) => {
-    const meals = []
-    return new Promise(((resolve, reject) => {
-        setTimeout(() => {
-            for (meal of data) {
-                let recipes = []
-                meal.recipes.forEach(recipe => {
-                    recipes.push({id: recipe.id, name: recipe.name})
-                })
-                if (meals[meal.date] === undefined) {
-                    meals[meal.date] = {[meal.title]: recipes}
-                } else {
-                    meals[meal.date] = {[meal.title]: recipes, ...meals[meal.date]}
-                }
-            }
-
-            resolve(meals)
-        }, 2000)
-    }))
-}
 
 router.post('/', [], (req, res) => {
     daoMeal

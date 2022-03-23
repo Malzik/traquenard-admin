@@ -17,6 +17,7 @@ const ingredientDao = {
         new Promise((resolve, reject) =>
             IngredientTable.create({
                 name: ingredient.name,
+                image: ingredient.image
             })
                 .then(ingredient => resolve(ingredient))
                 .catch(err => reject(err))

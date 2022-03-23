@@ -14,6 +14,11 @@ const getTable = db => db
             validate: {
                 len: [2, 50]
             }
+        },
+        image: {
+            type: Sequelize.STRING,
+            defaultValue: "empty.png",
+            allowNull: true
         }
     }, {tableName: "recipe", underscored: true});
 

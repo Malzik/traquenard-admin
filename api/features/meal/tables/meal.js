@@ -8,14 +8,26 @@ const getTable = db => db
             primaryKey: true,
             autoIncrement: true,
         },
-        title: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
         date: {
             type: Sequelize.DATE,
             allowNull: false
-        }
+        },
+        order: {
+            type: Sequelize.INTEGER,
+            allowNull: false
+        },
+        quantity: {
+            type: Sequelize.INTEGER,
+            allowNull: false
+        },
+        recipe_id: {
+            type: Sequelize.INTEGER,
+            primaryKey: true,
+            references: {
+                model: 'Recipe',
+                key: 'id'
+            }
+        },
     }, {tableName: "meal", underscored: true});
 
 module.exports = getTable;

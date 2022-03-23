@@ -1,49 +1,43 @@
 const db = require('../../services/db/db');
+const {Sequelize} = require("sequelize");
 
 const IngredientTable = require("./tables/ingredient")(db);
 const RecipeIngredientTable = require("./tables/recipe_ingredient")(db);
 const RecipeTable = require("./tables/recipe")(db);
-const MealRecipeTable = require("./tables/meal_recipe")(db);
 const MealTable = require("./tables/meal")(db);
 
-MealTable.belongsToMany(RecipeTable, {through: MealRecipeTable});
+MealTable.belongsTo(RecipeTable, { as: "recipe"});
 RecipeTable.belongsToMany(IngredientTable, {through: RecipeIngredientTable});
 
 const mealDao = {
     get: () =>
         new Promise((resolve, reject) => {
             MealTable.findAll({
+                raw: true,
+                attributes: ['id', 'date', 'order', 'quantity',
+                    [Sequelize.col('recipe.id'), 'recipe_id'], Sequelize.col('recipe.name'), Sequelize.col('recipe.image')],
                 include: [{
                     model: RecipeTable,
-                    as: "recipes",
-                    required: true
-                }]
+                    as: 'recipe',
+                    attributes: []
+                }],
+                order: [['order', 'ASC']]
             })
                 .then(results => resolve(results))
                 .catch(err => reject(err));
         }),
     insert: meal =>
         new Promise((resolve, reject) => {
-            console.log(meal)
-            MealTable.findOrCreate({
+            MealTable.findOne({
                 where: {
-                    title: meal.title,
+                    recipeId: meal.recipe_id,
                     date: meal.date
-                }
-            })
-                .then(newMeal => {
-                    newMeal = newMeal[0]
-                    meal.recipes.forEach(recipe => {
-                        RecipeTable.findOrCreate({
-                            where: {
-                                name: recipe.name
-                            }
-                        }).then(dbRecipe => {
-                            newMeal.setRecipes([dbRecipe[0]])
-                        })
-                    })
-                    resolve(201)
-                })
+                },
+            }).then(obj => {
+                if(obj)
+                    return obj.update({...meal, quantity: obj.quantity + 1});
+                return MealTable.create({...meal, quantity: 1});
+            }).then(meal => resolve({...meal}))
                 .catch(err => reject(err));
         }),
     update: (id, newRecipes) =>
