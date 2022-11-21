@@ -5,7 +5,7 @@ const {ValidationError} = require("sequelize");
 const replyServerError = (err, res) => {
   logger.error(err);
   if (err instanceof ClientError) {
-    res.status(err.status).send(err);
+    res.status(err.status).send(err.data);
   } else if (err instanceof ValidationError) {
     res.status(500).send(err.errors);
   } else {

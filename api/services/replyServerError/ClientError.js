@@ -1,7 +1,8 @@
 class ClientError extends Error {
-  constructor(props, status) {
-    super(props);
+  constructor(data, status) {
+    super(data);
     this.status = status;
+    this.data = data;
   }
 }
 

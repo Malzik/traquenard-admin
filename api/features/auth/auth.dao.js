@@ -8,6 +8,7 @@ const tokenList = {}
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const ClientError = require("../../services/replyServerError/ClientError");
 
 const createToken = (user, roles, secret) => {
     return jwt.sign({
@@ -59,7 +60,7 @@ const authDao = {
             })
                 .then(user => {
                     if (!user) {
-                        return reject(res.status(404).send({ message: "User Not found." }));
+                        return reject(new ClientError({message: "User Not found."}, 404));
                     }
 
                     const passwordIsValid = bcrypt.compareSync(
@@ -68,10 +69,10 @@ const authDao = {
                     );
 
                     if (!passwordIsValid) {
-                        return res.status(401).send({
+                        return reject(new ClientError({
                             accessToken: null,
                             message: "Mot de passe invalide !"
-                        });
+                        }, 401));
                     }
                     const authorities = [];
                     user.getRoles().then(roles => {

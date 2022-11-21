@@ -3,17 +3,18 @@ const daoMeal = require('./meal.dao');
 const daoRecipe = require('./recipe.dao');
 const daoIngredient = require('./ingredient.dao');
 const replyServerError = require("../../services/replyServerError/replyServerError");
+const authJwt = require("../../middleware/authJwt");
 
 const router = express.Router();
 
-router.get('/', [], (req, res) => {
+router.get('/', [authJwt.verifyToken], (req, res) => {
     daoMeal
         .get()
         .then(meals => res.status(200).json(meals))
         .catch(err => replyServerError(err, res));
 });
 
-router.post('/', [], (req, res) => {
+router.post('/', [authJwt.verifyToken], (req, res) => {
     daoMeal
         .insert(req.body)
         .then(response => {
@@ -22,7 +23,7 @@ router.post('/', [], (req, res) => {
         .catch(err => replyServerError(err, res));
 });
 
-router.put('/:id', [], (req, res) => {
+router.put('/:id', [authJwt.verifyToken], (req, res) => {
     daoMeal
         .update(req.params.id, req.body)
         .then(() => {
@@ -31,7 +32,7 @@ router.put('/:id', [], (req, res) => {
         .catch(err => replyServerError(err, res));
 });
 
-router.delete('/:id', [], (req, res) => {
+router.delete('/:id', [authJwt.verifyToken], (req, res) => {
     daoMeal
         .delete(req.params.id)
         .then(() => {
@@ -40,14 +41,14 @@ router.delete('/:id', [], (req, res) => {
         .catch(err => replyServerError(err, res));
 });
 
-router.get('/recipe', [], (req, res) => {
+router.get('/recipe', [authJwt.verifyToken], (req, res) => {
     daoRecipe
         .get()
         .then(response => res.status(200).send(response))
         .catch(err => replyServerError(err, res));
 });
 
-router.post('/recipe', [], (req, res) => {
+router.post('/recipe', [authJwt.verifyToken], (req, res) => {
     daoRecipe
         .insert(req.body)
         .then(response => {
@@ -56,7 +57,7 @@ router.post('/recipe', [], (req, res) => {
         .catch(err => replyServerError(err, res));
 });
 
-router.put('/recipe/:id', [], (req, res) => {
+router.put('/recipe/:id', [authJwt.verifyToken], (req, res) => {
     daoRecipe
         .update(req.params.id, req.body)
         .then(response => {
@@ -65,7 +66,7 @@ router.put('/recipe/:id', [], (req, res) => {
         .catch(err => replyServerError(err, res));
 });
 
-router.delete('/recipe/:id', [], (req, res) => {
+router.delete('/recipe/:id', [authJwt.verifyToken], (req, res) => {
     daoRecipe
         .delete(req.params.id)
         .then(() => {
@@ -74,14 +75,14 @@ router.delete('/recipe/:id', [], (req, res) => {
         .catch(err => replyServerError(err, res));
 });
 
-router.get('/ingredient', [], (req, res) => {
+router.get('/ingredient', [authJwt.verifyToken], (req, res) => {
     daoIngredient
         .get()
         .then(response => res.status(200).send(response))
         .catch(err => replyServerError(err, res));
 });
 
-router.post('/ingredient', [], (req, res) => {
+router.post('/ingredient', [authJwt.verifyToken], (req, res) => {
     daoIngredient
         .insert(req.body)
         .then(response => {
@@ -90,7 +91,7 @@ router.post('/ingredient', [], (req, res) => {
         .catch(err => replyServerError(err, res));
 });
 
-router.put('/ingredient/:id', [], (req, res) => {
+router.put('/ingredient/:id', [authJwt.verifyToken], (req, res) => {
     daoIngredient
         .update(req.params.id, req.body)
         .then(response => {
@@ -99,7 +100,7 @@ router.put('/ingredient/:id', [], (req, res) => {
         .catch(err => replyServerError(err, res));
 });
 
-router.delete('/ingredient/:id', [], (req, res) => {
+router.delete('/ingredient/:id', [authJwt.verifyToken], (req, res) => {
     daoIngredient
         .delete(req.params.id)
         .then(() => {
